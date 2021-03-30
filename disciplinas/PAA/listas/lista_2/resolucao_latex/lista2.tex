@@ -1,0 +1,107 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amssymb}%usar formula matematica
+\usepackage{graphicx}%insere imagem
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{indentfirst}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{cancel}
+\usepackage{subfig}
+\usepackage{siunitx}
+\usepackage[alf]{abntex2cite} 
+%\newtheorem{teo}{Teorema}
+\renewcommand{\baselinestretch}{1.5}%estilo da fonte
+\usepackage{verbatim} % para comentarios
+\usepackage{float}  % para imagens
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{geometry}%configura margem
+%\geometry{verbose,a4paper,tmargin=30mm,bmargin=20mm,lmargin=30mm,rmargin=20mm}
+
+\begin{document}
+\newgeometry{top = 1.5cm, lmargin = 1.5cm, rmargin = 1.5cm} 
+
+\begin{figure}[H]
+	\centering
+	\begin{minipage}[]{0.07\linewidth}
+	\includegraphics[width=\linewidth]{images/ufop.png}	
+	\end{minipage}
+\hfill
+	\begin{minipage}[]{0.6\linewidth}
+		\centering
+	\textbf{UNIVERSIDADE FEDERAL DE OURO PRETO\\}
+		Rafael Francisco de Oliveira - 2021.10171\\
+		PCC104 - Projeto e Análise de Algoritmos\\
+		Github: \href{https://github.com/raffoliveira/Master_Degree}{raffoliveira}\\
+		Lista 2
+		
+	\end{minipage}
+\hfill	
+	\begin{minipage}[c]{0.15\linewidth}
+	\includegraphics[width=\linewidth]{images/icea.jpg}	
+	\end{minipage}
+
+\vspace{0.5cm}
+\hrulefill
+\end{figure}
+
+{\Large \textbf{Execução das questões práticas}}
+
+\vspace{0.5cm}
+
+A estrutura da pasta denominada \textsf{lista\_2} no GitHub segue abaixo:
+
+A implementação dos algoritmos foi dividida em módulos. A pasta \textsf{exercicios} contém os arquivos de cada exercício. O arquivo chamado \textsf{functions.h} é responsável por ter as declarações de todas as funções enquanto o arquivo chamado \textsf{functions.cpp} contém as implementações de cada função. No momento da execução de cada algoritmo é necessário executar também o arquivo \textsf{functions.cpp}.
+
+A pasta \textsf{testes} contém os arquivos contendo as instâncias para testes. Para a escolha de cada arquivo, basta modificar as linhas \textsf{30} e \textsf{31} do arquivo \textsf{functions.cpp}, as quais especificam o caminho do diretório da pasta e o nome do arquivo escolhido.
+
+O ambiente de execução utilizado durante a criação dos algoritmos foi \textit{Linux}. Por isso, para a execução dos algoritmos, basta executar o seguinte comando abaixo no terminal:
+
+\textbf{g++ exercicio\_1.cpp functions.cpp -o exe}
+
+\textbf{./main}
+
+\vspace{1cm}
+
+{\Large \textbf{Questões teóricas}}
+
+\begin{enumerate}
+	\item Apresente um descrição da classe \textit{vector} apresentando o custo computacional de cada uma de suas operações.
+	
+	\textit{Vector} é uma forma de armazenar informações contíguas, onde os elementos podem ser acessados por interadores (\textit{iterators}) ou por \textit{offsets} de ponteiros para os elementos. A diferença entre um \textit{vector} e um \textit{static array} é que o \textit{vector} é alocado dinamicamente (a memória é alocada a medida que cresce), consequentemente ocupando mais memória enquanto o \textit{static array} alocada memória estática. A tabela abaixo apresenta as suas operações e seus custos operacionais.
+	
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{llccll}
+			\toprule
+			\textbf{Operação} & \textbf{Custo} &&& \textbf{Operação} & \textbf{Custo}\\
+			\midrule
+			swap & constante &&& clear & linear(\textit{n})\\
+			operador= & linear(\textit{n}) &&& assign & linear(\textit{n})\\
+			reserve & linear(\textit{n}) &&& shrink\_to\_fit & linear(\textit{n})\\
+			erase & linear(\textit{n}) &&& push\_back & constante amortizada\\
+			emplace\_back & constante amortizada &&& insert & linear\\
+			emplace & linear &&& resize & linear\\
+			pop\_back & constant &&& at & constant\\
+			get\_allocator & constant &&& operator[] & constant\\
+			front & constant &&& back & constant\\
+			empty & constant &&& size & constant\\
+			max\_size & constant &&& capacity & constant\\
+			data & constant\\		
+			
+			\bottomrule			
+		\end{tabular}
+	\end{table}
+	
+	
+	
+\end{enumerate}
+
+\bibliography{bib/refer.bib}
+
+\end{document}
