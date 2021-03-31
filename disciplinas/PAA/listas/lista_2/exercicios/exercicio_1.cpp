@@ -11,7 +11,7 @@ using namespace std;
 
 int main()
 {
-    vector<int> arr = ReadingFile();
+    vector<float> arr = ReadingFile();
     PrintVector(arr);
     BubbleSort(arr);
     PrintVector(arr);

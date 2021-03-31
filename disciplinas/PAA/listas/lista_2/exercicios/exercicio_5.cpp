@@ -5,38 +5,36 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+#include <stdlib.h>
+#include <utility>
 #include "functions.h"
 
 using namespace std;
 
 int main()
 {
-    vector<vector<float>> vec;
-    vector<float> pairs;
+    vector<pair<float, float>> vec;
     int number_points = 0;
     float x, y = 0;
 
-    cout << "Enter a number of pairs:";
-    cin >> number_points;
+    do
+    {
+        cout << "Enter a number of pairs:";
+        cin >> number_points;
+    } while (number_points <= 1);
 
     for (int i = 0; i < number_points; i++)
     {
-        cout << "Enter with x of pair " << i << ":";
+        cout << "x of Point" << i + 1 << ": ";
         cin >> x;
-        pairs.push_back(x);
-        cout << "Enter with y of pair " << i << ":";
+        cout << "y of Point" << i + 1 << ": ";
         cin >> y;
-        pairs.push_back(y);
-        vec.push_back(pairs);
-        pairs.clear();
+        vec.push_back(make_pair(x, y));
     }
-    PrintVectorOfVector(vec);
-    BruteForceClosestPair(vec);
 
-    // cout << vec[0][0];
-    // cout << vec[0][1];
-    // cout << vec[1][0];
-    // cout << vec[1][0];
+    cout << "Vector of points: ";
+    PrintVectorOfPair(vec);
+    BruteForceClosestPair(vec);
 
     return 0;
 }

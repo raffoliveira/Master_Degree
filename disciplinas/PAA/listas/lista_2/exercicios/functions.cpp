@@ -1,20 +1,18 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <string>
-#include <iterator>
 #include <cmath>
+#include <algorithm>
+#include <iomanip>
 #include <utility>
 #include "functions.h"
-#include <bits/stdc++.h>
 
 using namespace std;
 
 //--------------------------------------------------------------------
-//print vector
-void PrintVector(vector<int> vec)
+void PrintVector(vector<float> &vec)
 {
-    for (size_t i = 0; i < vec.size(); i++)
+    for (auto i = 0; i < vec.size(); i++)
     {
         cout << vec[i] << "|";
     }
@@ -22,26 +20,12 @@ void PrintVector(vector<int> vec)
 }
 
 //--------------------------------------------------------------------
-//print vector of vector
-void PrintVectorOfVector(vector<vector<float>> vec)
+void PrintVectorOfPair(vector<pair<float, float>> &vec)
 {
     cout << "[";
-    for (size_t i = 0; i < vec.size(); i++)
+    for (auto i = 0; i < vec.size(); i++)
     {
-        cout << "(";
-        for (size_t j = 0; j < vec[i].size(); j++)
-        {
-            cout << vec[i][j];
-            if (j != vec[i].size() - 1)
-            {
-                cout << ",";
-            }
-        }
-        cout << ")";
-        if (i != vec.size() - 1)
-        {
-            cout << ",";
-        }
+        cout << "(" << vec[i].first << "," << vec[i].second << ")";
     }
     cout << "]";
     cout << endl;
@@ -51,10 +35,10 @@ void PrintVectorOfVector(vector<vector<float>> vec)
 /*read file
 when load the testing files, it just changes the variable path to your specific path
 */
-vector<int> ReadingFile()
+vector<float> ReadingFile()
 {
 
-    vector<int> array;
+    vector<float> array;
     string line;
     string path = "/media/rafael/rafael_backup/rafaeloliveira/Documents/mestrado/disciplinas/PAA/listas/lista_2/testes/";
     fstream readFile(path + "small.txt");
@@ -75,8 +59,7 @@ vector<int> ReadingFile()
 }
 
 //--------------------------------------------------------------------
-
-void BubbleSort(vector<int> &vec)
+void BubbleSort(vector<float> &vec)
 {
     int temp = 0;
 
@@ -95,8 +78,7 @@ void BubbleSort(vector<int> &vec)
 }
 
 //--------------------------------------------------------------------
-
-void SelectionSort(vector<int> &vec)
+void SelectionSort(vector<float> &vec)
 {
     int min = 0;
     int temp = 0;
@@ -118,11 +100,10 @@ void SelectionSort(vector<int> &vec)
 }
 
 //--------------------------------------------------------------------
-
-int SequentialSearch2(vector<int> vec, double number)
+float SequentialSearch2(vector<float> &vec, double number)
 {
 
-    for (size_t i = 0; i < vec.size(); i++)
+    for (auto i = 0; i < vec.size(); i++)
     {
         if (vec[i] == number)
         {
@@ -153,50 +134,40 @@ int BruteForceStringMatch(string original, string pattern)
 }
 
 //--------------------------------------------------------------------
-
-float DistanceBetweenPoints(vector<vector<float>> vec, size_t i, size_t j)
+float DistanceBetweenPoints(vector<pair<float, float>> &vec, auto i, auto j)
 {
-    return sqrt(pow((vec[i][j] - vec[i + 1][j]), 2) + pow((vec[i][j + 1] - vec[i + 1][j + 1]), 2));
+    return sqrt(pow(abs((vec[i].first - vec[j].first)), 2) + pow(abs((vec[i].second - vec[j].second)), 2));
 }
 
 //--------------------------------------------------------------------
 
-void BruteForceClosestPair(vector<vector<float>> vec)
+void BruteForceClosestPair(vector<pair<float, float>> &vec)
 {
-    cout << "arrived";
-    vector<float> distances_min;                        //distances minimun
-    vector<float> point;                                //one point
-    vector<vector<float>> pair_points;                  //pair of two points
-    float distance;                                     //distance between two point
-    vector<pair<float, vector<vector<float>>>> results; //result
+    vector<float> distances_min;
+    vector<pair<float, float>> points;                       //distances minimun
+    float distance;                                          //distance between two point
+    vector<pair<float, vector<pair<float, float>>>> results; //result
 
-    if (vec.size() < 2)
+    for (auto i = 0; i < vec.size() - 1; i++)
     {
-        cout << "Vector has one pair. Please insert more than one!";
-    }
-
-    for (size_t i = 0; i < vec.size(); i++)
-    {
-        for (size_t j = 0; j < vec[i].size(); j++)
+        for (auto j = i + 1; j < vec.size(); j++)
         {
             distance = DistanceBetweenPoints(vec, i, j);
             distances_min.push_back(distance); //set distance in vector of distances
-            point.push_back(vec[i][j]);        //mount first point
-            point.push_back(vec[i][j + 1]);
-            pair_points.push_back(point);   //push in vector of points
-            point.clear();                  //clear point
-            point.push_back(vec[i + 1][j]); //mount second point
-            point.push_back(vec[i + 1][j + 1]);
-            pair_points.push_back(point);                        //push in vector of points
-            point.clear();                                       //clear point
-            results.push_back(make_pair(distance, pair_points)); //push pair into vector
+            points.push_back(make_pair(vec[i].first, vec[i].second));
+            points.push_back(make_pair(vec[j].first, vec[j].second));
+            results.push_back(make_pair(distance, points)); //push pair into vector
+            points.clear();
         }
     }
-    float distance_minimun = *min_element(distances_min.begin(), distances_min.end()); //find the smallest distance
+    float distance_minimum = *min_element(distances_min.begin(), distances_min.end()); //find the smallest distance
 
-    vector<pair<float, vector<vector<float>>>>::iterator it = find_if(results.begin(), results.end(),
-                                                                      [&distance_minimun](const pair<float, vector<vector<float>>> &element) { return element.first == distance_minimun; });
-    cout << "The pair ";
-    PrintVectorOfVector((*it).second);
-    cout << "has " << (*it).first << "as the smallest distance." << endl;
+    for (auto i = 0; i < results.size(); i++)
+    {
+        if (results[i].first == distance_minimum)
+        {
+            cout << "The smallest distance is " << results[i].first << " between: ";
+            PrintVectorOfPair(results[i].second);
+        }
+    }
 }

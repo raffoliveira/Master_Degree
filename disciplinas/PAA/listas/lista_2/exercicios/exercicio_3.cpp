@@ -11,9 +11,9 @@ using namespace std;
 
 int main()
 {
-    vector<int> arr = ReadingFile();
+    vector<float> arr = ReadingFile();
     double number;
-    double result;
+    float result;
 
     cout << "Enter a number:";
     cin >> number;
