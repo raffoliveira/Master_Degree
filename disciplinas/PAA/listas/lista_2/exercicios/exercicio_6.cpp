@@ -19,7 +19,7 @@ int main()
     {
         cout << "Enter a number of pairs:";
         cin >> number_points;
-    } while (number_points <= 1);
+    } while (number_points < 2);
 
     for (int i = 0; i < number_points; i++)
     {
@@ -32,7 +32,9 @@ int main()
 
     cout << "Vector of points: ";
     PrintVectorOfPair(vec);
-    BruteForceClosestPair(vec);
+    vector<int> result = ConvexHull(vec);
+    cout << "The index of the points belonging to convex hull are:" << endl;
+    PrintVectorInt(result);
 
     return 0;
 }

@@ -1,5 +1,3 @@
-//Algoritmo bublesort
-
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -12,9 +10,9 @@ using namespace std;
 int main()
 {
     vector<float> arr = ReadingFile();
-    PrintVector(arr);
+    PrintVectorFloat(arr);
     BubbleSort(arr);
-    PrintVector(arr);
+    PrintVectorFloat(arr);
 
     return 0;
 }

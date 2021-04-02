@@ -1,5 +1,3 @@
-//Algoritmo bublesort
-
 #include <iostream>
 #include <fstream>
 #include <vector>
