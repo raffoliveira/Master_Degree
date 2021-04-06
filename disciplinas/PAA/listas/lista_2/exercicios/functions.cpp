@@ -443,7 +443,7 @@ bool GraphDFS::breadthFirstSearchDFS(int initial_vertex, int target) //make a DF
 
 //--------------------------------------------------------------------
 
-void travellingSalesmanProblem(vector<vector<float>> vec, float aux, int number_city)
+void travellingSalesmanProblem(vector<vector<float>> &vec, float aux, int number_city)
 {
     vector<float> vertex;
     vector<pair<int, int>> cities;
@@ -493,5 +493,24 @@ void travellingSalesmanProblem(vector<vector<float>> vec, float aux, int number_
             cout << "The smallest route is: " << min_cost << "." << endl;
             printVectorOfPair(routes[i].second);
         }
+    }
+}
+
+float knapSackProblem(float knapSackWeight, vector<float> &weights, vector<float> &values, int n)
+{
+
+    if (n == 0 || knapSackWeight == 0) //base case
+    {
+        return 0;
+    }
+
+    if (weights[n - 1] > knapSackWeight) //if the item has weight bigger than knapSackWeight, it can be removed of optimal solution
+    {
+        return knapSackProblem(knapSackWeight, weights, values, n - 1);
+    }
+    else
+    {
+        return max(values[n - 1] + knapSackProblem(knapSackWeight - weights[n - 1], weights, values, n - 1),
+                   knapSackProblem(knapSackWeight, weights, values, n - 1));
     }
 }

@@ -20,14 +20,5 @@ int main()
 
     bruteForceStringMatch(original, pattern);
 
-    // if (result != -1)
-    // {
-    //     cout << "The pattern " << pattern << " starts at position " << result << " of the original.\n";
-    // }
-    // else
-    // {
-    //     cout << "The pattern " << pattern << " wasn't found in the original.\n";
-    // }
-
     return 0;
 }
