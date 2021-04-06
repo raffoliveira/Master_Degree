@@ -25,13 +25,8 @@ int main()
     // vec2.push_back(4.0);
     // PrintVectorFloat(vec2);
     // cout << vec2[1] * vec2.size();
-    bool re = CheckPointsInLeft(vec);
-    cout << re;
-    if (re)
-    {
 
-        cout << "Ffff" << endl;
-    }
+    cout << vec[2][2];
 
     return 0;
 }

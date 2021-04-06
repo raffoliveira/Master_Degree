@@ -12,8 +12,8 @@ using namespace std;
 int main()
 {
     vector<pair<float, float>> vec;
-    int number_points = 0;
-    float x, y = 0;
+    int number_points;
+    float x, y;
 
     do
     {

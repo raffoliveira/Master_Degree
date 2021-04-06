@@ -5,6 +5,9 @@
 #include <algorithm>
 #include <iomanip>
 #include <limits>
+#include <queue>
+#include <list>
+#include <stack>
 #include <utility>
 #include "functions.h"
 
@@ -48,6 +51,20 @@ void PrintVectorFloat(vector<float> &vec)
 //print vector of pairs
 
 void PrintVectorOfPair(vector<pair<float, float>> &vec)
+{
+    cout << "[";
+    for (auto i = 0; i < vec.size(); i++)
+    {
+        cout << "(" << vec[i].first << "," << vec[i].second << ")";
+    }
+    cout << "]";
+    cout << endl;
+}
+
+//--------------------------------------------------------------------
+//print vector of pairs
+
+void PrintVectorOfPairInt(vector<pair<int, int>> &vec)
 {
     cout << "[";
     for (auto i = 0; i < vec.size(); i++)
@@ -297,4 +314,199 @@ vector<int> ConvexHull(vector<pair<float, float>> &vec)
     }
 
     return extreme_points;
+}
+
+//--------------------------------------------------------------------
+
+GraphBFS::GraphBFS(int vertex) //construct
+{
+    this->vertex = vertex;            //set the number of vertex
+    list_adj = new list<int>[vertex]; //creating the vector
+}
+
+//--------------------------------------------------------------------
+
+void GraphBFS::addArrestBFS(int vertex1, int vertex2) //add an arrest into graph
+{
+    list_adj[vertex1].push_back(vertex2); //add vertex2 into the vertex1 adjacency list
+}
+
+//--------------------------------------------------------------------
+
+bool GraphBFS::breadthFirstSearchBFS(int initial_vertex, int target) //make a BFS from a initial vertex
+{
+    queue<int> queue_BFS;
+    vector<bool> visited_vertex(vertex);
+
+    for (auto i = 0; i < vertex; i++) //set all vertex as false
+    {
+        visited_vertex.push_back(false);
+    }
+
+    if (initial_vertex == target) //find the target if it is root
+    {
+        cout << "Visiting vertex " << initial_vertex << "..." << endl;
+        return true;
+    }
+
+    while (true)
+    {
+        list<int>::iterator it;
+        for (it = list_adj[initial_vertex].begin(); it != list_adj[initial_vertex].end(); it++)
+        {
+            if (!visited_vertex[*it])
+            {
+                cout << "Visiting vertex " << *it << "..." << endl;
+                if ((*it) == target) //find the target
+                {
+                    return true;
+                }
+                auto position_visited = visited_vertex.begin() + (*it);
+                visited_vertex.insert(position_visited, true); //mark as visited vertex
+                queue_BFS.push(*it);                           //insert into queue
+            }
+        }
+
+        if (!queue_BFS.empty())
+        {                                       //check if the queue is empty
+            initial_vertex = queue_BFS.front(); //take the first element
+            queue_BFS.pop();                    //remove the vertex of the queue
+        }
+        else
+        {
+            return false;
+        }
+    }
+}
+
+//--------------------------------------------------------------------
+
+GraphDFS::GraphDFS(int vertex) //construct
+{
+    this->vertex = vertex;            //set the number of vertex
+    list_adj = new list<int>[vertex]; //creating the vector
+}
+
+//--------------------------------------------------------------------
+
+void GraphDFS::addArrestDFS(int vertex1, int vertex2) //add an arrest into graph
+{
+    list_adj[vertex1].push_back(vertex2); //add vertex2 into the vertex1 adjacency list
+}
+
+//--------------------------------------------------------------------
+
+bool GraphDFS::breadthFirstSearchDFS(int initial_vertex, int target) //make a DFS from a initial vertex
+{
+    stack<int> stack_DFS;
+    vector<bool> visited_vertex(vertex);
+
+    for (auto i = 0; i < vertex; i++) //set all vertex as false
+    {
+        visited_vertex.push_back(false);
+    }
+
+    if (initial_vertex == target) //find the target if it is a root
+    {
+        cout << "Visiting vertex " << initial_vertex << "..." << endl;
+        return true;
+    }
+    while (true)
+    {
+        if (!visited_vertex[initial_vertex])
+        {
+            cout << "Visiting vertex " << initial_vertex << "..." << endl;
+            if (visited_vertex[initial_vertex] == target)
+            {
+                return true;
+            }
+            auto position = visited_vertex.begin() + initial_vertex;
+            visited_vertex.insert(position, true); //mark as visited vertex
+            stack_DFS.push(initial_vertex);        //push into the stack
+        }
+
+        bool aux = false;       //auxiliar
+        list<int>::iterator it; //iterator
+        for (it = list_adj[initial_vertex].begin(); it != list_adj[initial_vertex].end(); it++)
+        {
+            if (!visited_vertex[*it]) //vertex not yet visited
+            {
+                if ((*it) == target) //find the target
+                {
+                    return true;
+                }
+                aux = true; //mark as visited
+                break;
+            }
+        }
+        if (aux) //update initial vertex
+        {
+            initial_vertex = *it;
+        }
+        else
+        {
+            stack_DFS.pop(); //remove from stack
+
+            if (stack_DFS.empty()) //check if stack if empty. If true, search is done.
+            {
+                return false;
+            }
+            initial_vertex = stack_DFS.top(); //if stack isn't empty, update initial vertex
+        }
+    }
+}
+
+//--------------------------------------------------------------------
+
+void TravellingSalesmanProblem(vector<vector<float>> vec, float aux, int number_city)
+{
+    vector<float> vertex;
+    vector<pair<int, int>> cities;
+    vector<pair<float, vector<pair<int, int>>>> routes;
+
+    for (auto i = 0; i < number_city; i++) //store all vertex apart from source vertex
+    {
+        if (i != aux)
+        {
+            vertex.push_back(i);
+        }
+    }
+
+    int min_cost = INT8_MAX; //cost of route
+    do
+    {
+        int cost_current_path = 0; //current cost
+
+        int k = aux;
+        for (int i = 0; i < vertex.size(); i++)
+        {
+            cost_current_path += vec[k][vertex[i]];
+            cities.push_back(make_pair(k, vertex[i])); //store the current path
+            k = vertex[i];
+        }
+        cost_current_path += vec[k][aux];
+        cities.push_back(make_pair(k, aux));         //store the current path
+        min_cost = min(min_cost, cost_current_path); //find the minimum route
+
+        if (min_cost == cost_current_path) //if current route is minimum, save the current path
+        {
+            routes.clear();
+            routes.push_back(make_pair(min_cost, cities));
+            cities.clear();
+        }
+        else //otherwise keep the path
+        {
+            cities.clear();
+        }
+
+    } while (next_permutation(vertex.begin(), vertex.end())); //create the next permutation
+
+    for (auto i = 0; i < routes.size(); i++) //print result
+    {
+        if (routes[i].first == min_cost)
+        {
+            cout << "The smallest route is: " << min_cost << "." << endl;
+            PrintVectorOfPairInt(routes[i].second);
+        }
+    }
 }
