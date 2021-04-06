@@ -1,4 +1,4 @@
-This is LuaTeX, Version 1.0.4 (TeX Live 2017/Debian)  (format=lualatex 2020.8.13)  5 APR 2021 23:31
+This is LuaTeX, Version 1.0.4 (TeX Live 2017/Debian)  (format=lualatex 2020.8.13)  6 APR 2021 18:27
  restricted system commands enabled.
 **lista2.tex
 (./lista2.tex
@@ -34,7 +34,7 @@ Inserting `luaotfload.aux.set_capheight' at position 3 in `luaotfload.patch_font
 '.
 Inserting `luaotfload.rewrite_fontname' at position 4 in `luaotfload.patch_font'
 .
-luaotfload | main : initialization completed in 0.209 seconds
+luaotfload | main : initialization completed in 0.332 seconds
 Babel <3.18> and hyphenation patterns for 1 language(s) loaded.
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
@@ -1090,18 +1090,20 @@ Here is how much of LuaTeX's memory you used:
  518 words of node memory still in use:
    6 hlist, 2 vlist, 2 rule, 2 glue, 1 kern, 6 attribute, 64 glue_spec, 6 attrib
 ute_list, 1 write nodes
-   avail lists: 2:621,3:59,4:19,5:191,6:2533,7:715,8:29,9:164,10:7,11:245
+   avail lists: 2:645,3:58,4:17,5:177,6:2589,7:766,8:37,9:173,10:11,11:248
  25143 multiletter control sequences out of 65536+600000
  52 fonts using 7561559 bytes
- 44i,8n,42p,548b,885s stack positions out of 5000i,500n,10000p,200000b,100000s
+ 44i,8n,42p,794b,860s stack positions out of 5000i,500n,10000p,200000b,100000s
 </usr/share/texmf/fonts/opentype/public/lm/lmroman12-italic.otf></usr/share/texm
 f/fonts/opentype/public/lm/lmsans12-regular.otf></usr/share/texmf/fonts/opentype
 /public/lm/lmroman12-regular.otf></usr/share/texmf/fonts/opentype/public/lm/lmro
-man12-bold.otf>
-Output written on lista2.pdf (3 pages, 160201 bytes).
+man12-bold.otf></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmm
+i12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb>
 
-PDF statistics: 58 PDF objects out of 1000 (max. 8388607)
- 38 compressed objects within 1 object stream
+Output written on lista2.pdf (3 pages, 177087 bytes).
+
+PDF statistics: 66 PDF objects out of 1000 (max. 8388607)
+ 44 compressed objects within 1 object stream
  9 named destinations out of 1000 (max. 131072)
  1 words of extra memory for PDF output out of 10000 (max. 100000000)
 

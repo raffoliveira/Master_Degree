@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <utility>
 #include "functions.h"
+#include "functions.cpp"
 
 using namespace std;
 
@@ -31,10 +32,10 @@ int main()
     }
 
     cout << "Vector of points: ";
-    PrintVectorOfPair(vec);
-    vector<int> result = ConvexHull(vec);
+    printVectorOfPair(vec);
+    vector<int> result = convexHull(vec);
     cout << "The index of the points belonging to convex hull are:" << endl;
-    PrintVectorInt(result);
+    printVector(result);
 
     return 0;
 }

@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <utility>
 #include "functions.h"
+#include "functions.cpp"
 
 using namespace std;
 

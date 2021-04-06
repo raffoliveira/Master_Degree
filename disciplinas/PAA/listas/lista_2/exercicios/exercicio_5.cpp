@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <utility>
 #include "functions.h"
+#include "functions.cpp"
 
 using namespace std;
 
@@ -31,8 +32,8 @@ int main()
     }
 
     cout << "Vector of points: ";
-    PrintVectorOfPair(vec);
-    BruteForceClosestPair(vec);
+    printVectorOfPair(vec);
+    bruteForceClosestPair(vec);
 
     return 0;
 }

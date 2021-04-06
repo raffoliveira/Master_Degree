@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <string>
 #include "functions.h"
+#include "functions.cpp"
 
 using namespace std;
 
@@ -12,21 +13,21 @@ int main()
     string original;
     string pattern;
 
-    cout << "Enter a string:";
+    cout << "Enter a string: ";
     cin >> original;
-    cout << "Enter a pattern:";
+    cout << "Enter a pattern: ";
     cin >> pattern;
 
-    int result = BruteForceStringMatch(original, pattern);
+    bruteForceStringMatch(original, pattern);
 
-    if (result != -1)
-    {
-        cout << "The pattern " << pattern << " starts at position " << result << " of the original.\n";
-    }
-    else
-    {
-        cout << "The pattern " << pattern << " wasn't found in the original.\n";
-    }
+    // if (result != -1)
+    // {
+    //     cout << "The pattern " << pattern << " starts at position " << result << " of the original.\n";
+    // }
+    // else
+    // {
+    //     cout << "The pattern " << pattern << " wasn't found in the original.\n";
+    // }
 
     return 0;
 }
