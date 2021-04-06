@@ -1,4 +1,4 @@
-This is LuaTeX, Version 1.0.4 (TeX Live 2017/Debian)  (format=lualatex 2020.8.13)  29 MAR 2021 22:04
+This is LuaTeX, Version 1.0.4 (TeX Live 2017/Debian)  (format=lualatex 2020.8.13)  5 APR 2021 23:31
  restricted system commands enabled.
 **lista2.tex
 (./lista2.tex
@@ -34,7 +34,7 @@ Inserting `luaotfload.aux.set_capheight' at position 3 in `luaotfload.patch_font
 '.
 Inserting `luaotfload.rewrite_fontname' at position 4 in `luaotfload.patch_font'
 .
-luaotfload | main : initialization completed in 0.202 seconds
+luaotfload | main : initialization completed in 0.209 seconds
 Babel <3.18> and hyphenation patterns for 1 language(s) loaded.
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
@@ -1068,40 +1068,40 @@ f-var/luatex-cache/generic/fonts/otl/lmroman12-italic.luc) [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}<./images/ufop.png><./images/
 icea.jpg>]
-(./lista2.bbl
+[2] (./lista2.bbl
 
 LaTeX Warning: Empty `thebibliography' environment on input line 8.
 
 )
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 107.
- [2]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 107.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 148.
+ [3]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 148.
  (./lista2.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 107.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 107.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 148.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 148.
 Package rerunfilecheck Info: File `lista2.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 107.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 148.
 )
 
 Here is how much of LuaTeX's memory you used:
- 21532 strings out of 494480
+ 21537 strings out of 494480
  100000,552014 words of node,token memory allocated
  518 words of node memory still in use:
    6 hlist, 2 vlist, 2 rule, 2 glue, 1 kern, 6 attribute, 64 glue_spec, 6 attrib
 ute_list, 1 write nodes
-   avail lists: 2:527,3:50,4:16,5:190,6:2063,7:776,8:31,9:172,10:7,11:213
- 25140 multiletter control sequences out of 65536+600000
+   avail lists: 2:621,3:59,4:19,5:191,6:2533,7:715,8:29,9:164,10:7,11:245
+ 25143 multiletter control sequences out of 65536+600000
  52 fonts using 7561559 bytes
- 44i,8n,42p,546b,883s stack positions out of 5000i,500n,10000p,200000b,100000s
+ 44i,8n,42p,548b,885s stack positions out of 5000i,500n,10000p,200000b,100000s
 </usr/share/texmf/fonts/opentype/public/lm/lmroman12-italic.otf></usr/share/texm
 f/fonts/opentype/public/lm/lmsans12-regular.otf></usr/share/texmf/fonts/opentype
 /public/lm/lmroman12-regular.otf></usr/share/texmf/fonts/opentype/public/lm/lmro
 man12-bold.otf>
-Output written on lista2.pdf (2 pages, 153076 bytes).
+Output written on lista2.pdf (3 pages, 160201 bytes).
 
-PDF statistics: 53 PDF objects out of 1000 (max. 8388607)
- 34 compressed objects within 1 object stream
- 7 named destinations out of 1000 (max. 131072)
+PDF statistics: 58 PDF objects out of 1000 (max. 8388607)
+ 38 compressed objects within 1 object stream
+ 9 named destinations out of 1000 (max. 131072)
  1 words of extra memory for PDF output out of 10000 (max. 100000000)
 
