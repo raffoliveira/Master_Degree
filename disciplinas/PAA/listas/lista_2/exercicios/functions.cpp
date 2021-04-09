@@ -443,57 +443,89 @@ bool GraphDFS::breadthFirstSearchDFS(int initial_vertex, int target) //make a DF
 
 //--------------------------------------------------------------------
 
-void travellingSalesmanProblem(vector<vector<float>> &vec, float aux, int number_city)
+void gp(vector<float> &current_path, vector<float> &to_do, vector<vector<float>> &result)
 {
-    vector<float> vertex;
-    vector<pair<int, int>> cities;
-    vector<pair<float, vector<pair<int, int>>>> routes;
-
-    for (auto i = 0; i < number_city; i++) //store all vertex apart from source vertex
+    if (to_do.empty())
     {
-        if (i != aux)
+        printVector(current_path);
+        result.push_back(current_path);
+    }
+    else
+    {
+        for (int i = 0; i < to_do.size(); i++)
         {
-            vertex.push_back(i);
+            vector<float> path(current_path);
+            path.push_back(to_do[i]);
+
+            vector<float> left_to_do(to_do);
+            left_to_do.erase(left_to_do.begin() + i);
+
+            gp(path, left_to_do, result);
         }
     }
+}
 
-    int min_cost = INT8_MAX; //cost of route
+//--------------------------------------------------------------------
+
+vector<vector<float>> generate_permutation(int n)
+{
+    vector<float> current_path = {0};
+    vector<float> to_do;
+    vector<vector<float>> result;
+
+    for (int i = 1; i < n; i++) //coloca a cidades q faltam visitar
+    {
+        to_do.push_back(i);
+    }
+    gp(current_path, to_do, result);
+    cout << "Size of result " << result.size() << endl;
+    return result;
+}
+
+//--------------------------------------------------------------------
+
+void travellingSalesmanProblem(vector<vector<float>> &vec, float initial_city, int number_city)
+{
+    vector<float> vertex;
+    vector<pair<float, float>> cities;
+    pair<float, vector<pair<float, float>>> routes;
+
+    vector<vector<float>> permutation = generate_permutation(number_city);
+
+    float min_cost = std::numeric_limits<float>::max(); //minimum cost
+
     do
     {
-        int cost_current_path = 0; //current cost
+        vertex = permutation[0];     //take the first path
+        float cost_current_path = 0; //current cost
 
-        int k = aux;
+        int k = initial_city;
         for (int i = 0; i < vertex.size(); i++)
         {
             cost_current_path += vec[k][vertex[i]];
             cities.push_back(make_pair(k, vertex[i])); //store the current path
             k = vertex[i];
         }
-        cost_current_path += vec[k][aux];
-        cities.push_back(make_pair(k, aux));         //store the current path
-        min_cost = min(min_cost, cost_current_path); //find the minimum route
+        cost_current_path += vec[k][initial_city];    //close the path
+        cities.push_back(make_pair(k, initial_city)); //store the current path
+        min_cost = min(min_cost, cost_current_path);  //find the minimum route
 
-        if (min_cost == cost_current_path) //if current route is minimum, save the current path
+        if (min_cost == cost_current_path) //if min_cost is minimum than current path, save the min_cost
         {
-            routes.clear();
-            routes.push_back(make_pair(min_cost, cities));
+            routes = make_pair(cost_current_path, cities);
             cities.clear();
         }
         else //otherwise keep the path
         {
             cities.clear();
         }
+        permutation.erase(permutation.begin()); ///erase the first path
 
-    } while (next_permutation(vertex.begin(), vertex.end())); //create the next permutation
+    } while (!permutation.empty()); //next permutation
 
-    for (auto i = 0; i < routes.size(); i++) //print result
-    {
-        if (routes[i].first == min_cost)
-        {
-            cout << "The smallest route is: " << min_cost << "." << endl;
-            printVectorOfPair(routes[i].second);
-        }
-    }
+    cout << "The smallest route is: " << routes.first << "." << endl;
+    cout << "The route is: ";
+    printVectorOfPair(routes.second);
 }
 
 float knapSackProblem(float knapSackWeight, vector<float> &weights, vector<float> &values, int n)
