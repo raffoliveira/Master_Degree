@@ -18,7 +18,7 @@ int main()
     vector<vector<int>> result;
     vector<int> item;
 
-    for (int i = 1; i <= n; i++)
+    for (int i = 0; i <= n; i++)
     {
         item.push_back(i);
     }

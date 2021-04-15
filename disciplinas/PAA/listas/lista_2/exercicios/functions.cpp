@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <limits>
 #include <string>
+#include <numeric>
 #include <queue>
 #include <list>
 #include <stack>
@@ -482,7 +483,7 @@ vector<vector<float>> generate_permutation(int n)
     return result;
 }
 
-//--------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 
 void travellingSalesmanProblem(vector<vector<float>> &vec, float initial_city, int number_city)
 {
@@ -528,21 +529,65 @@ void travellingSalesmanProblem(vector<vector<float>> &vec, float initial_city, i
     printVectorOfPair(routes.second);
 }
 
-float knapSackProblem(float knapSackWeight, vector<float> &weights, vector<float> &values, int n)
+//---------------------------------------------------------------------------------------
+
+template <typename T>
+void powerSet(vector<vector<T>> &result, vector<T> &vec, int n)
 {
+    auto number_subsets = pow(2, n);
+    int count, j;
+    vector<float> subset;
+
+    for (count = 0; count < number_subsets; count++)
+    {
+        for (j = 0; j < n; j++)
+        {
+            if (count & (1 << j))
+            {
+                subset.push_back(vec[j]);
+            }
+        }
+        result.push_back(subset);
+        subset.clear();
+    }
+}
+
+//---------------------------------------------------------------------------------------
+
+void knapSackProblem(float knapSackWeight, vector<float> &weights, vector<float> &values, int n)
+{
+    vector<vector<float>> result_subsets;
+    vector<float> pair_weights;
+    float sub_value = 0, max_value = 0;
+    int index;
 
     if (n == 0 || knapSackWeight == 0) //base case
     {
-        return 0;
+        cout << "The maximum value inside knapsack is 0" << endl;
     }
 
-    if (weights[n - 1] > knapSackWeight) //if the item has weight bigger than knapSackWeight, it can be removed of optimal solution
+    powerSet(result_subsets, weights, n); //generate all possibilities
+
+    for (int i = 0; i < result_subsets.size(); i++)
     {
-        return knapSackProblem(knapSackWeight, weights, values, n - 1);
+        if (accumulate(result_subsets[i].begin(), result_subsets[i].end(), 0) <= knapSackWeight)
+        {
+            for (int j = 0; j < result_subsets[i].size(); j++)
+            {
+                index = sequentialSearch(weights, result_subsets[i][j]);
+                sub_value += values[index];
+            }
+            if (sub_value >= max_value)
+            {
+                pair_weights = result_subsets[i];
+                max_value = sub_value;
+                sub_value = 0;
+            }
+            sub_value = 0;
+        }
     }
-    else
-    {
-        return max(values[n - 1] + knapSackProblem(knapSackWeight - weights[n - 1], weights, values, n - 1),
-                   knapSackProblem(knapSackWeight, weights, values, n - 1));
-    }
+
+    cout << "The maximum value inside knapsack is " << max_value << endl;
+    cout << "And the weights are: " << endl;
+    printVector(pair_weights);
 }

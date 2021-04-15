@@ -14,12 +14,8 @@ template <typename T>
 void insertionSort(std::vector<T> &);
 template <typename T>
 void powerSet(std::vector<std::vector<T>> &, std::vector<T> &, int);
-
 std::vector<float> readingFileFloat();
 std::vector<std::string> readingFileString();
-template <typename T>
-float sequentialSearch(std::vector<T> &, T);
-void knapSackProblem(float, std::vector<float> &, std::vector<float> &, int);
 
 /*
 template <typename T>

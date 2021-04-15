@@ -175,6 +175,7 @@ void insertionSort(vector<T> &vec)
 }
 
 //------------------------------generate all subsets of a set--------------------------
+
 template <typename T>
 void powerSet(vector<vector<T>> &result, vector<T> &vec, int n)
 {
@@ -194,72 +195,6 @@ void powerSet(vector<vector<T>> &result, vector<T> &vec, int n)
         result.push_back(subset);
         subset.clear();
     }
-    printVectorOfVector(result);
-}
-
-//------------------------find the element in vector--------------------------------------------
-
-template <typename T>
-float sequentialSearch(vector<T> &vec, T number)
-{
-    for (auto i = 0; i < vec.size(); i++)
-    {
-        if (vec[i] == number)
-        {
-            return i;
-        }
-    }
-    return -1;
-}
-
-void knapSackProblem(float knapSackWeight, vector<float> &weights, vector<float> &values, int n)
-{
-
-    vector<vector<float>> result_subsets;
-    vector<float> pair_weights;
-    float sub_value = 0, max_value = 0;
-    int index;
-
-    if (n == 0 || knapSackWeight == 0) //base case
-    {
-        cout << "The maximum value inside knapsack is 0" << endl;
-    }
-
-    powerSet(result_subsets, weights, n); //generate all possibilities
-    result_subsets.erase(result_subsets.begin() + 0);
-    printVectorOfVector(result_subsets);
-
-    for (int i = 0; i < result_subsets.size(); i++) //removing all possibility that it is bigger than knapsackweight
-    {
-        float sum_vector = accumulate(result_subsets[i].begin(), result_subsets[i].end(), 0);
-        cout << sum_vector << endl;
-        if (sum_vector > knapSackWeight)
-        {
-            result_subsets.erase(result_subsets.begin() + i);
-        }
-    }
-
-    printVectorOfVector(result_subsets);
-
-    for (int i = 0; i < result_subsets.size(); i++)
-    {
-        for (int j = 0; j < result_subsets[i].size(); j++)
-        {
-            index = sequentialSearch(weights, result_subsets[i][j]);
-            sub_value += values[index];
-        }
-        if (sub_value >= max_value)
-        {
-            pair_weights = result_subsets[i];
-            max_value = sub_value;
-            sub_value = 0;
-        }
-        sub_value = 0;
-    }
-
-    cout << "The maximum value inside knapsack is " << max_value << endl;
-    cout << "And the weights are: " << endl;
-    printVector(pair_weights);
 }
 
 /*

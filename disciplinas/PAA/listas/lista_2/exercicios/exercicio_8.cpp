@@ -36,8 +36,7 @@ int main()
     cout << "Values: " << endl;
     printVector(value);
 
-    float result = knapSackProblem(knapSackWeight, weight, value, number_items);
-    cout << "The maximum value inside knapsack is " << result << endl;
+    knapSackProblem(knapSackWeight, weight, value, number_items);
 
     return 0;
 }

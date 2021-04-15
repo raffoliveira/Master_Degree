@@ -13,21 +13,15 @@ using namespace std;
 int main()
 {
     vector<pair<float, float>> vec;
-    int number_points;
+    int number_points = 20;
     float x, y;
 
-    do
-    {
-        cout << "Enter a number of pairs:";
-        cin >> number_points;
-    } while (number_points < 2);
+    srand((unsigned int)time(0));
 
     for (int i = 0; i < number_points; i++)
     {
-        cout << "x of Point" << i + 1 << ": ";
-        cin >> x;
-        cout << "y of Point" << i + 1 << ": ";
-        cin >> y;
+        x = rand() % 100;
+        y = rand() % 100;
         vec.push_back(make_pair(x, y));
     }
 
