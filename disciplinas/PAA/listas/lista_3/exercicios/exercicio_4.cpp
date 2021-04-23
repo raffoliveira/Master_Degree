@@ -1,9 +1,3 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <algorithm>
-#include <string>
-#include <numeric>
 #include "functions.h"
 #include "functions.cpp"
 

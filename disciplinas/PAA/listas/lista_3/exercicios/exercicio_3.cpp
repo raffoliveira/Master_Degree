@@ -1,9 +1,3 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <algorithm>
-#include <string>
-#include <chrono>
 #include "functions.h"
 #include "functions.cpp"
 

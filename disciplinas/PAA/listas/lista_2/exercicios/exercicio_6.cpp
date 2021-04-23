@@ -1,10 +1,3 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <algorithm>
-#include <string>
-#include <stdlib.h>
-#include <utility>
 #include "functions.h"
 #include "functions.cpp"
 
@@ -20,8 +13,8 @@ int main()
 
     for (int i = 0; i < number_points; i++)
     {
-        x = rand() % 100;
-        y = rand() % 100;
+        x = rand() % 50;
+        y = rand() % 50;
         vec.push_back(make_pair(x, y));
     }
 

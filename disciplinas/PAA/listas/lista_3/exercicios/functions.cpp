@@ -1,17 +1,3 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <cmath>
-#include <algorithm>
-#include <iomanip>
-#include <limits>
-#include <math.h>
-#include <numeric>
-#include <string>
-#include <queue>
-#include <list>
-#include <stack>
-#include <utility>
 #include "functions.h"
 
 using namespace std;
@@ -195,6 +181,71 @@ void powerSet(vector<vector<T>> &result, vector<T> &vec, int n)
         result.push_back(subset);
         subset.clear();
     }
+}
+
+//-------------------------------fake coin-------------------------------------
+
+int fakeCoin(const vector<int> &vec, int begin, int end)
+{
+    int fake_coin = -1; //index of fake coin
+
+    if ((end - begin) == 1)
+    {
+        return begin;
+    }
+    else
+    {
+        int pile_size = (end - begin) / 2;
+        int remainder = (end - begin) % 2;
+
+        int begin_p2 = begin + pile_size;
+
+        end = (remainder != 0) ? end - 1 : end;
+
+        int weight_p1 = accumulate(vec.begin() + begin, vec.begin() + begin_p2, 0);
+        int weight_p2 = accumulate(vec.begin() + begin_p2, vec.begin() + end, 0);
+
+        if (weight_p1 < weight_p2)
+        {
+            fake_coin = fakeCoin(vec, begin, begin_p2);
+        }
+        else if (weight_p1 > weight_p2)
+        {
+            fake_coin = fakeCoin(vec, begin_p2, end);
+        }
+        else
+        {
+            fake_coin = end;
+        }
+    }
+
+    return fake_coin;
+}
+template <typename T>
+void johnsonTrotter(vector<vector<T>> &result, vector<T> &vec)
+{
+    //all arrows initialize with 0 (left)
+    //arrows to right has 1
+
+    vector<T> arrows(vec.size(), 0);
+
+    do
+    {
+        int biggest = -1, index_big = -1;
+        for (int i = 0; i < vec.size(); i++)
+        {
+            if (arrows[i] == 0)
+            {
+                if (vec[i] > biggest)
+                {
+                    biggest = vec[i];
+                    index_big = i;
+                }
+            }
+        }
+        swap(vec[index_big], vec[index_big - 1]);
+
+    } while (!equal(arrows.begin() + 1, arrows.end(), arrows.begin()))
 }
 
 /*

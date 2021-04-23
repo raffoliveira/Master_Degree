@@ -1,8 +1,3 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <algorithm>
-#include <string>
 #include "functions.h"
 #include "functions.cpp"
 

@@ -1,9 +1,22 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
+#pragma once
+
+#include <stdlib.h>
+#include <iostream>
+#include <fstream>
 #include <vector>
-#include <utility>
+#include <cmath>
+#include <algorithm>
+#include <iomanip>
+#include <limits>
 #include <string>
+#include <numeric>
+#include <queue>
+#include <list>
+#include <stack>
+#include <utility>
 
 template <typename T>
 void printVector(std::vector<T> &);

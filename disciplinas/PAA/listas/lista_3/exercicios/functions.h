@@ -1,9 +1,21 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
+#include <iostream>
+#include <fstream>
 #include <vector>
-#include <utility>
+#include <cmath>
+#include <algorithm>
+#include <iomanip>
+#include <limits>
+#include <math.h>
+#include <numeric>
 #include <string>
+#include <queue>
+#include <list>
+#include <stack>
+#include <chrono>
+#include <utility>
 
 template <typename T>
 void printVector(std::vector<T> &);
@@ -14,6 +26,7 @@ template <typename T>
 void insertionSort(std::vector<T> &);
 template <typename T>
 void powerSet(std::vector<std::vector<T>> &, std::vector<T> &, int);
+int fakeCoin(const std::vector<int> &, int, int);
 std::vector<float> readingFileFloat();
 std::vector<std::string> readingFileString();
 
