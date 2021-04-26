@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
@@ -12,7 +14,9 @@
 #include <numeric>
 #include <string>
 #include <queue>
+#include <ctime>
 #include <list>
+#include <cstdlib>
 #include <stack>
 #include <chrono>
 #include <utility>
@@ -27,6 +31,11 @@ void insertionSort(std::vector<T> &);
 template <typename T>
 void powerSet(std::vector<std::vector<T>> &, std::vector<T> &, int);
 int fakeCoin(const std::vector<int> &, int, int);
+int binarySearch(std::vector<float> &, int);
+int interpolationSearch(std::vector<float> &, int);
+float selectMedian(std::vector<int> &, int, int);
+int partition(std::vector<int> &, int, int);
+int randomNumber();
 std::vector<float> readingFileFloat();
 std::vector<std::string> readingFileString();
 

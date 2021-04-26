@@ -175,12 +175,26 @@ void powerSet(vector<vector<T>> &result, vector<T> &vec, int n)
         {
             if (count & (1 << j))
             {
+                cout << "count: " << count << endl;
+                cout << "j: " << (1 << j) << endl;
+                cout << "bitwise: " << (count & (1 << j)) << endl;
                 subset.push_back(vec[j]);
+                cout << "subset: ";
+                printVector(subset);
             }
         }
+        cout << "Result: ";
         result.push_back(subset);
+        printVectorOfVector(result);
         subset.clear();
     }
+}
+
+//-------------------------------random number-------------------------------------
+
+int randomNumber()
+{
+    return (rand() % 100);
 }
 
 //-------------------------------fake coin-------------------------------------
@@ -221,6 +235,122 @@ int fakeCoin(const vector<int> &vec, int begin, int end)
 
     return fake_coin;
 }
+
+//-------------------------------binary search------------------------------------
+
+int binarySearch(vector<float> &vec, int value)
+{
+    int m, l = 0, r = vec.size() - 1;
+
+    while (l <= r)
+    {
+        m = (l + r) / 2; //divide by half
+
+        if (value == vec[m]) //find the element
+        {
+            return m;
+        }
+        else if (value < vec[m]) //take the left side
+        {
+            r = m - 1;
+        }
+        else //take the right side
+        {
+            l = m + 1;
+        }
+    }
+    return -1;
+}
+
+//-------------------------------interpolation search------------------------------------
+
+int interpolationSearch(vector<float> &vec, int value)
+{
+    int m, l = 0, r = vec.size() - 1;
+
+    while (l <= r && value >= vec[l] && value <= vec[r])
+    {
+        if (l == r)
+        {
+            if (vec[l] == value)
+            {
+                return l;
+            }
+            return -1;
+        }
+        int x = l + (((value - vec[l]) * (r - l)) / (vec[r] - vec[l]));
+
+        if (vec[x] == value)
+        {
+            return x;
+        }
+        else if (vec[x] < value)
+        {
+            l = x + 1;
+        }
+        else
+        {
+            r = x - 1;
+        }
+    }
+    return -1;
+}
+//-------------------------------partition vector------------------------------------
+
+int partition(vector<int> &v, int low, int high)
+{
+    int key = v[low];
+    while (low < high)
+    {
+        while (low < high && v[high] > key)
+        {
+            high--;
+        }
+        v[low] = v[high];
+        while (low < high && v[low] < key)
+        {
+            low++;
+        }
+        v[high] = v[low];
+    }
+    v[low] = key;
+
+    return low;
+}
+
+//-------------------------------find median------------------------------------
+
+float selectMedian(vector<int> &vec, int lo, int hi)
+{
+    int pos, n = vec.size(), mid = (lo + (hi - lo)) / 2;
+
+    while (true)
+    {
+        pos = partition(vec, lo, hi);
+
+        if (pos == mid)
+        {
+            break;
+        }
+        else if (pos > mid)
+        {
+            hi = pos - 1;
+        }
+        else
+        {
+            lo = pos + 1;
+        }
+    }
+    if (n % 2 != 0)
+    {
+        return vec[mid];
+    }
+    else
+    {
+        return (vec[mid] + vec[mid + 1]) / 2.0;
+    }
+}
+
 template <typename T>
 void johnsonTrotter(vector<vector<T>> &result, vector<T> &vec)
 {
@@ -245,7 +375,7 @@ void johnsonTrotter(vector<vector<T>> &result, vector<T> &vec)
         }
         swap(vec[index_big], vec[index_big - 1]);
 
-    } while (!equal(arrows.begin() + 1, arrows.end(), arrows.begin()))
+    } while (!equal(arrows.begin() + 1, arrows.end(), arrows.begin()));
 }
 
 /*
