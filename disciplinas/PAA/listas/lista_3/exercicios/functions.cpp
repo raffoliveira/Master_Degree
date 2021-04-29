@@ -297,57 +297,39 @@ int interpolationSearch(vector<float> &vec, int value)
 }
 //-------------------------------partition vector------------------------------------
 
-int partition(vector<int> &v, int low, int high)
+int lomutoPartition(vector<int> &v, int l, int r)
 {
-    int key = v[low];
-    while (low < high)
-    {
-        while (low < high && v[high] > key)
-        {
-            high--;
-        }
-        v[low] = v[high];
-        while (low < high && v[low] < key)
-        {
-            low++;
-        }
-        v[high] = v[low];
-    }
-    v[low] = key;
+    int p = v[l], s = l;
 
-    return low;
+    for (int i = l + 1; i < r; i++)
+    {
+        if (v[i] < p)
+        {
+            s++;
+            swap(v[s], v[i]);
+        }
+    }
+    swap(v[l], v[s]);
+    return s;
 }
 
 //-------------------------------find median------------------------------------
 
-float selectMedian(vector<int> &vec, int lo, int hi)
+int quickSelect(vector<int> &v, int l, int r, int k)
 {
-    int pos, n = vec.size(), mid = (lo + (hi - lo)) / 2;
+    int s = lomutoPartition(v, l, r);
 
-    while (true)
+    if (s == k)
     {
-        pos = partition(vec, lo, hi);
-
-        if (pos == mid)
-        {
-            break;
-        }
-        else if (pos > mid)
-        {
-            hi = pos - 1;
-        }
-        else
-        {
-            lo = pos + 1;
-        }
+        return v[s];
     }
-    if (n % 2 != 0)
+    else if (s > k)
     {
-        return vec[mid];
+        return quickSelect(v, l, s, k);
     }
-    else
+    else if (s < k)
     {
-        return (vec[mid] + vec[mid + 1]) / 2.0;
+        return quickSelect(v, s, r, k);
     }
 }
 

@@ -5,7 +5,7 @@ using namespace std;
 
 int main()
 {
-    int index, number_elements = 6;
+    int index, number_elements = 7;
     float value;
     vector<int> vec(number_elements);
 
@@ -15,9 +15,11 @@ int main()
     cout << "Vector original: ";
     printVector(vec);
 
-    int l = 0, r = vec.size() - 1;
+    float p = 0.5;
+    int l = 0, r = vec.size(), k = ceil((vec.size() - 1) * p);
 
-    value = selectMedian(vec, l, r);
+    value = quickSelect(vec, l, r, k);
+
     cout << "The median is " << value << endl;
 
     sort(vec.begin(), vec.end());
