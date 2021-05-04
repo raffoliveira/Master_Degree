@@ -268,7 +268,7 @@ int interpolationSearch(vector<float> &vec, int value)
 {
     int m, l = 0, r = vec.size() - 1;
 
-    while (l <= r && value >= vec[l] && value <= vec[r])
+    while (l <= r && value >= vec[l] && value <= vec[r]) //check if value is between the minimum and maximum
     {
         if (l == r)
         {
@@ -278,7 +278,7 @@ int interpolationSearch(vector<float> &vec, int value)
             }
             return -1;
         }
-        int x = l + (((value - vec[l]) * (r - l)) / (vec[r] - vec[l]));
+        int x = l + (((value - vec[l]) * (r - l)) / (vec[r] - vec[l])); //calculating the point x
 
         if (vec[x] == value)
         {
@@ -327,499 +327,198 @@ int quickSelect(vector<int> &v, int l, int r, int k)
     {
         return quickSelect(v, l, s, k);
     }
-    else if (s < k)
+    else
     {
         return quickSelect(v, s, r, k);
     }
 }
 
+//-------------------------------------------------------------------
 template <typename T>
-void johnsonTrotter(vector<vector<T>> &result, vector<T> &vec)
+class BinarySearchTree
 {
-    //all arrows initialize with 0 (left)
-    //arrows to right has 1
-
-    vector<T> arrows(vec.size(), 0);
-
-    do
+    class BSTNode
     {
-        int biggest = -1, index_big = -1;
-        for (int i = 0; i < vec.size(); i++)
+    public:
+        //attributes
+        T value;
+        unique_ptr<BSTNode> left;
+        unique_ptr<BSTNode> right;
+
+        //construct
+        BSTNode(T v)
         {
-            if (arrows[i] == 0)
-            {
-                if (vec[i] > biggest)
-                {
-                    biggest = vec[i];
-                    index_big = i;
-                }
-            }
+            value = v;
         }
-        swap(vec[index_big], vec[index_big - 1]);
+    };
 
-    } while (!equal(arrows.begin() + 1, arrows.end(), arrows.begin()));
-}
+public:
+    //construct
+    BinarySearchTree(){};
 
-/*
-//-------------------------------print vector of pairs-------------------------------------
-
-template <typename T>
-void printVectorOfPair(vector<pair<T, T>> &vec)
-{
-    cout << "[";
-    for (auto i = 0; i < vec.size(); i++)
+    InsertInfo insert(T v)
     {
-        cout << "(" << vec[i].first << "," << vec[i].second << ")";
+        return insert(v, root);
     }
-    cout << "]";
-    cout << endl;
-}
 
-
-//----------------------------ordering vector - Bubble Sort----------------------------------------
-
-template <typename T>
-void bubbleSort(vector<T> &vec)
-{
-    int temp = 0;
-
-    for (size_t i = 0; i < vec.size(); i++)
+    SearchInfo search(T v)
     {
-        for (size_t j = i + 1; j < vec.size(); j++)
-        {
-            if (vec[j] < vec[i]) //check if previous element is smaller than actual
-            {
-                swap(vec[i], vec[j]);
-                // temp = vec[i]; //swap elements
-                // vec[i] = vec[j];
-                // vec[j] = temp;
-            }
-        }
+        return search(v, root);
     }
-}
 
-//----------------------------ordering vector - Selection Sort----------------------------------------
-
-template <typename T>
-void selectionSort(vector<T> &vec)
-{
-    int min = 0;
-    int temp = 0;
-
-    for (auto i = 0; i < vec.size(); i++)
+    void print()
     {
-        min = i;
-        for (auto j = i + 1; j < vec.size(); j++)
-        {
-            if (vec[j] < vec[min])
-            {
-                min = j;
-            }
-        }
-        swap(vec[i], vec[min]);
-        // temp = vec[i];
-        // vec[i] = vec[min];
-        // vec[min] = temp;
+        print(root);
     }
-}
 
-//------------------------find the element in vector--------------------------------------------
+private:
+    unique_ptr<BSTNode> root;
 
-template <typename T>
-float sequentialSearch(vector<T> &vec, T number)
-{
-    for (auto i = 0; i < vec.size(); i++)
+    InsertInfo insert(T v, unique_ptr<BSTNode> &node)
     {
-        if (vec[i] == number)
+        if (!node)
         {
-            return i;
+            // node = unique_ptr<BSTNode>(new BSTNode(v));
+            node = make_unique<BSTNode>(v);
+            return InsertInfo::Inserted;
         }
+        if (v == node->value)
+        {
+            return InsertInfo::IsAlreadyIn;
+        }
+
+        return (v < node->value) ? insert(v, node->left) : insert(v, node->right);
     }
-    return -1;
-}
 
-//-------------------------find match pattern in string-------------------------------------------
-//return if pattern not match with original string
-//return first index of the match
-
-void bruteForceStringMatch(string original, string pattern)
-{
-    int i, j;
-    for (i = 0; i <= (original.size() - pattern.size()); i++)
+    SearchInfo search(T v, unique_ptr<BSTNode> &node)
     {
-        for (j = 0; j < pattern.size(); j++)
+        if (!node)
         {
-            if (original[i + j] != pattern[j])
-            {
-                break;
-            }
+            return SearchInfo::NotFound;
         }
-        if (j == pattern.size())
+
+        if (v == node->value)
         {
-            cout << "Pattern found at index " << i << endl;
+            return SearchInfo::Found;
+        }
+
+        return (v < node->value) ? search(v, node->left) : search(v, node->right);
+    }
+
+    void print(unique_ptr<BSTNode> &node)
+    {
+        if (!node)
+        {
             return;
         }
-    }
-    cout << "Pattern not found!" << endl;
-}
-
-//--------------------------calculate the distance using Euclidean distance------------------------------------------
-
-float distanceBetweenPoints(vector<pair<float, float>> &vec, auto i, auto j)
-{
-    return sqrt(pow(abs((vec[i].first - vec[j].first)), 2) + pow(abs((vec[i].second - vec[j].second)), 2));
-}
-
-//------------------------print the smallest distance and the pair of points--------------------------------------------
-
-void bruteForceClosestPair(vector<pair<float, float>> &vec)
-{
-    vector<float> distances_min;                             //vector of minimum distances
-    vector<pair<float, float>> points;                       //vector of points
-    float distance;                                          //distance between two points
-    vector<pair<float, vector<pair<float, float>>>> results; //vector with distance and your pairs of points
-
-    for (auto i = 0; i < vec.size() - 1; i++) //calculate the all possibilities between two points
-    {
-        for (auto j = i + 1; j < vec.size(); j++)
+        else
         {
-            distance = distanceBetweenPoints(vec, i, j);              //calculate the distance
-            distances_min.push_back(distance);                        //set distance in vector of distances
-            points.push_back(make_pair(vec[i].first, vec[i].second)); //mount point i
-            points.push_back(make_pair(vec[j].first, vec[j].second)); //mount point j
-            results.push_back(make_pair(distance, points));           //push pair into vector
-            points.clear();                                           //clear vector of points
+            print(node->left);
+            cout << node->value << '\t';
+            print(node->right);
         }
     }
-    float distance_minimum = *min_element(distances_min.begin(), distances_min.end()); //find the smallest distance
+};
 
-    for (auto i = 0; i < results.size(); i++) //print result
+//-------------------------------------------------------------------
+
+template <typename T>
+bool checkMobileElement(vector<int> &arr, vector<T> &v)
+{
+    vector<bool> aux;
+
+    for (int i = 0; i < v.size(); i++)
     {
-        if (results[i].first == distance_minimum)
+        if (arr[i] == 0 && v[i - 1] < v[i] && i != 0)
         {
-            cout << "The smallest distance is " << results[i].first << " between: ";
-            printVectorOfPair(results[i].second);
+            aux.push_back(true);
+        }
+        else if (arr[i] == 1 && v[i + 1] < v[i] && i != v.size() - 1)
+        {
+            aux.push_back(true);
+        }
+        else
+        {
+            aux.push_back(false);
         }
     }
-}
 
-//-----------------------------sort vector to convexhull---------------------------------------
-
-int sortVectorConvexHull(vector<pair<float, float>> &vec)
-{
-    vector<pair<float, float>> aux(vec);
-
-    sort(aux.begin(), aux.end()); //ordering original vector
-
-    for (size_t i = 0; i < vec.size(); i++)
+    for (int elem : aux)
     {
-        if ((vec[i].first == aux[0].first) && (vec[i].second == aux[0].second))
+        if (elem == true)
         {
-            return i;
+            return true;
         }
     }
-}
 
-//-----------------------------check if points are in right side of a line---------------------------------------
-
-bool checkPointsInRight(vector<vector<float>> &matrix)
-{
-    //calculate determinant
-    float det = 0; //result of determinant
-
-    float x = ((matrix[1][1] * matrix[2][2]) - (matrix[2][1] * matrix[1][2]));
-    float y = ((matrix[1][0] * matrix[2][2]) - (matrix[2][0] * matrix[1][2]));
-    float z = ((matrix[1][0] * matrix[2][1]) - (matrix[2][0] * matrix[1][1]));
-
-    det = ((matrix[0][0] * x) - (matrix[0][1] * y) + (matrix[0][2] * z));
-
-    if (det < 0)
-    {
-        return true;
-    }
     return false;
 }
 
-//------------------------------------calculate convex hull--------------------------------
-//the argument is a vector of point
-//return the vector H[1...h] with index of extreme points of convex hull
-//based in algorithm gift wrapping
-//pair<float, float> = pair.first representing the coord x and pair.second representing the coord y
-
-vector<int> convexHull(vector<pair<float, float>> &vec)
+template <typename T>
+int findLargestMobileElement(vector<int> &arr, vector<T> &v)
 {
-    vector<int> extreme_points;              //vector of extreme points belong to convex hull
-    vector<vector<float>> matrix;            //auxiliary matrix
-    int number_extreme_points = 0;           //number of extreme points
-    int i = std::numeric_limits<int>::max(); //iterator
-    int n = vec.size();                      //size of the vector of points
+    int k = -1, index_k = -1; //k is the largest mobile element
 
-    extreme_points.push_back(sortVectorConvexHull(vec)); //set the index of the smallest point
-    while (i != extreme_points[0])                       //loop until find the first index. This means the convex full is closed
+    for (int i = 0; i < v.size(); i++)
     {
-        i = (extreme_points[number_extreme_points] % (number_extreme_points + 1)) + 1;
-
-        for (int j = 0; j < n; j++)
+        if (arr[i] == 0 && v[i - 1] < v[i] && i != 0)
         {
-            //create a matrix
-            matrix.push_back({vec[extreme_points[number_extreme_points]].first, vec[extreme_points[number_extreme_points]].second, 1});
-            matrix.push_back({vec[i].first, vec[i].second, 1});
-            matrix.push_back({vec[j].first, vec[j].second, 1});
-            if (checkPointsInRight(matrix))
+            if (v[i] > k)
             {
-                i = j;
-            }
-            matrix.clear();
-        }
-        number_extreme_points++;
-        extreme_points.push_back(i);
-    }
-
-    return extreme_points;
-}
-
-//--------------------------------------------------------------------
-
-GraphBFS::GraphBFS(int vertex) //construct
-{
-    this->vertex = vertex;            //set the number of vertex
-    list_adj = new list<int>[vertex]; //creating the vector
-}
-
-//--------------------------------------------------------------------
-
-void GraphBFS::addArrestBFS(int vertex1, int vertex2) //add an arrest into graph
-{
-    list_adj[vertex1].push_back(vertex2); //add vertex2 into the vertex1 adjacency list
-}
-
-//--------------------------------------------------------------------
-
-bool GraphBFS::breadthFirstSearchBFS(int initial_vertex, int target) //make a BFS from a initial vertex
-{
-    queue<int> queue_BFS;
-    vector<bool> visited_vertex(vertex);
-
-    for (auto i = 0; i < vertex; i++) //set all vertex as false
-    {
-        visited_vertex.push_back(false);
-    }
-
-    if (initial_vertex == target) //find the target if it is root
-    {
-        cout << "Visiting vertex " << initial_vertex << "..." << endl;
-        return true;
-    }
-
-    while (true)
-    {
-        list<int>::iterator it;
-        for (it = list_adj[initial_vertex].begin(); it != list_adj[initial_vertex].end(); it++)
-        {
-            if (!visited_vertex[*it])
-            {
-                cout << "Visiting vertex " << *it << "..." << endl;
-                if ((*it) == target) //find the target
-                {
-                    return true;
-                }
-                auto position_visited = visited_vertex.begin() + (*it);
-                visited_vertex.insert(position_visited, true); //mark as visited vertex
-                queue_BFS.push(*it);                           //insert into queue
+                k = v[i];
+                index_k = i;
             }
         }
+        if (arr[i] == 1 && v[i + 1] < v[i] && i != v.size() - 1)
+        {
+            if (v[i] > k)
+            {
+                k = v[i];
+                index_k = i;
+            }
+        }
+    }
+    return index_k;
+}
 
-        if (!queue_BFS.empty())
-        {                                       //check if the queue is empty
-            initial_vertex = queue_BFS.front(); //take the first element
-            queue_BFS.pop();                    //remove the vertex of the queue
+//-------------------------------------------------------------------
+
+template <typename T>
+void johnsonTrotter(vector<vector<T>> &result, vector<T> &vec)
+{
+    //arrows right to left (<-) has 0
+    //arrows left to right (->) has 1
+
+    vector<int> arrows(vec.size(), 0);
+    int k;
+    T value;
+
+    result.push_back(vec);
+
+    while (checkMobileElement(arrows, vec))
+    {
+        k = findLargestMobileElement(arrows, vec); //largest mobile element
+        value = vec[k];
+
+        if (arrows[k] == 0)
+        {
+            swap(vec[k], vec[k - 1]);       //invert values
+            swap(arrows[k], arrows[k - 1]); //invert arrows of values
         }
         else
         {
-            return false;
-        }
-    }
-}
-
-//--------------------------------------------------------------------
-
-GraphDFS::GraphDFS(int vertex) //construct
-{
-    this->vertex = vertex;            //set the number of vertex
-    list_adj = new list<int>[vertex]; //creating the vector
-}
-
-//--------------------------------------------------------------------
-
-void GraphDFS::addArrestDFS(int vertex1, int vertex2) //add an arrest into graph
-{
-    list_adj[vertex1].push_back(vertex2); //add vertex2 into the vertex1 adjacency list
-}
-
-//--------------------------------------------------------------------
-
-bool GraphDFS::breadthFirstSearchDFS(int initial_vertex, int target) //make a DFS from a initial vertex
-{
-    stack<int> stack_DFS;
-    vector<bool> visited_vertex(vertex);
-
-    for (auto i = 0; i < vertex; i++) //set all vertex as false
-    {
-        visited_vertex.push_back(false);
-    }
-
-    if (initial_vertex == target) //find the target if it is a root
-    {
-        cout << "Visiting vertex " << initial_vertex << "..." << endl;
-        return true;
-    }
-    while (true)
-    {
-        if (!visited_vertex[initial_vertex])
-        {
-            cout << "Visiting vertex " << initial_vertex << "..." << endl;
-            if (visited_vertex[initial_vertex] == target)
-            {
-                return true;
-            }
-            auto position = visited_vertex.begin() + initial_vertex;
-            visited_vertex.insert(position, true); //mark as visited vertex
-            stack_DFS.push(initial_vertex);        //push into the stack
+            swap(vec[k], vec[k + 1]);       //invert values
+            swap(arrows[k], arrows[k + 1]); //invert arrows of values
         }
 
-        bool aux = false;       //auxiliar
-        list<int>::iterator it; //iterator
-        for (it = list_adj[initial_vertex].begin(); it != list_adj[initial_vertex].end(); it++)
+        result.push_back(vec);
+
+        for (int i = 0; i < vec.size(); i++) //reverse the direction of all the elements that are larger than k
         {
-            if (!visited_vertex[*it]) //vertex not yet visited
+            if (vec[i] > value)
             {
-                if ((*it) == target) //find the target
-                {
-                    return true;
-                }
-                aux = true; //mark as visited
-                break;
+                (arrows[i] == 0) ? arrows[i] = 1 : arrows[i] = 0;
             }
         }
-        if (aux) //update initial vertex
-        {
-            initial_vertex = *it;
-        }
-        else
-        {
-            stack_DFS.pop(); //remove from stack
-
-            if (stack_DFS.empty()) //check if stack if empty. If true, search is done.
-            {
-                return false;
-            }
-            initial_vertex = stack_DFS.top(); //if stack isn't empty, update initial vertex
-        }
     }
 }
-
-//--------------------------------------------------------------------
-
-void gp(vector<float> &current_path, vector<float> &to_do, vector<vector<float>> &result)
-{
-    if (to_do.empty())
-    {
-        printVector(current_path);
-        result.push_back(current_path);
-    }
-    else
-    {
-        for (int i = 0; i < to_do.size(); i++)
-        {
-            vector<float> path(current_path);
-            path.push_back(to_do[i]);
-
-            vector<float> left_to_do(to_do);
-            left_to_do.erase(left_to_do.begin() + i);
-
-            gp(path, left_to_do, result);
-        }
-    }
-}
-
-//--------------------------------------------------------------------
-
-vector<vector<float>> generate_permutation(int n)
-{
-    vector<float> current_path = {0};
-    vector<float> to_do;
-    vector<vector<float>> result;
-
-    for (int i = 1; i < n; i++) //coloca a cidades q faltam visitar
-    {
-        to_do.push_back(i);
-    }
-    gp(current_path, to_do, result);
-    cout << "Size of result " << result.size() << endl;
-    return result;
-}
-
-//--------------------------------------------------------------------
-
-void travellingSalesmanProblem(vector<vector<float>> &vec, float initial_city, int number_city)
-{
-    vector<float> vertex;
-    vector<pair<float, float>> cities;
-    pair<float, vector<pair<float, float>>> routes;
-
-    vector<vector<float>> permutation = generate_permutation(number_city);
-
-    float min_cost = std::numeric_limits<float>::max(); //minimum cost
-
-    do
-    {
-        vertex = permutation[0];     //take the first path
-        float cost_current_path = 0; //current cost
-
-        int k = initial_city;
-        for (int i = 0; i < vertex.size(); i++)
-        {
-            cost_current_path += vec[k][vertex[i]];
-            cities.push_back(make_pair(k, vertex[i])); //store the current path
-            k = vertex[i];
-        }
-        cost_current_path += vec[k][initial_city];    //close the path
-        cities.push_back(make_pair(k, initial_city)); //store the current path
-        min_cost = min(min_cost, cost_current_path);  //find the minimum route
-
-        if (min_cost == cost_current_path) //if min_cost is minimum than current path, save the min_cost
-        {
-            routes = make_pair(cost_current_path, cities);
-            cities.clear();
-        }
-        else //otherwise keep the path
-        {
-            cities.clear();
-        }
-        permutation.erase(permutation.begin()); ///erase the first path
-
-    } while (!permutation.empty()); //next permutation
-
-    cout << "The smallest route is: " << routes.first << "." << endl;
-    cout << "The route is: ";
-    printVectorOfPair(routes.second);
-}
-
-float knapSackProblem(float knapSackWeight, vector<float> &weights, vector<float> &values, int n)
-{
-
-    if (n == 0 || knapSackWeight == 0) //base case
-    {
-        return 0;
-    }
-
-    if (weights[n - 1] > knapSackWeight) //if the item has weight bigger than knapSackWeight, it can be removed of optimal solution
-    {
-        return knapSackProblem(knapSackWeight, weights, values, n - 1);
-    }
-    else
-    {
-        return max(values[n - 1] + knapSackProblem(knapSackWeight - weights[n - 1], weights, values, n - 1),
-                   knapSackProblem(knapSackWeight, weights, values, n - 1));
-    }
-}*/

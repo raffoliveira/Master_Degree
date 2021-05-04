@@ -8,7 +8,10 @@
         "string_view": "cpp",
         "initializer_list": "cpp",
         "ranges": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "fstream": "cpp",
+        "sstream": "cpp",
+        "tuple": "cpp"
     },
     "cSpell.ignoreWords": [
         "lomuto",
