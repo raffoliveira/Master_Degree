@@ -12,7 +12,7 @@ int main()
     srand(unsigned(time(0))); //different outputs
 
     generate(vec.begin(), vec.end(), randomNumber); //generate a vector of random number
-    cout << "Vector original: ";
+    cout << "Original vector: ";
     printVector(vec);
 
     float p = 0.5;
@@ -23,7 +23,7 @@ int main()
     cout << "The median is " << value << endl;
 
     sort(vec.begin(), vec.end());
-    cout << "Vector: ";
+    cout << "Ordered vector: ";
     printVector(vec);
 
     return 0;

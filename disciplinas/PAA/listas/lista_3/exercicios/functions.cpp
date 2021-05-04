@@ -454,6 +454,8 @@ bool checkMobileElement(vector<int> &arr, vector<T> &v)
     return false;
 }
 
+//-------------------------------------------------------------------
+
 template <typename T>
 int findLargestMobileElement(vector<int> &arr, vector<T> &v)
 {

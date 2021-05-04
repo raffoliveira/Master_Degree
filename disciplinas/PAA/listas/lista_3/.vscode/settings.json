@@ -11,7 +11,8 @@
         "utility": "cpp",
         "fstream": "cpp",
         "sstream": "cpp",
-        "tuple": "cpp"
+        "tuple": "cpp",
+        "ostream": "cpp"
     },
     "cSpell.ignoreWords": [
         "lomuto",
