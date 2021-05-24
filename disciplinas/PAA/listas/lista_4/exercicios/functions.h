@@ -11,6 +11,7 @@
 #include <iostream>
 #include <limits>
 #include <list>
+#include <set>
 #include <math.h>
 #include <memory>
 #include <numeric>
@@ -43,7 +44,6 @@ void printVector(std::vector<T> &vec)
 template <typename T>
 void printVectorOfVector(std::vector<std::vector<T>> &vec)
 {
-    std::cout << "[";
     for (int i = 0; i < vec.size(); i++)
     {
         std::cout << "[";
@@ -56,13 +56,21 @@ void printVectorOfVector(std::vector<std::vector<T>> &vec)
             }
         }
         std::cout << "]";
-
-        if (i < vec.size() - 1)
-        {
-            std::cout << ", ";
-        }
+        std::cout << std::endl;
     }
-    std::cout << "]";
+
+    std::cout << std::endl; // print new line
+}
+
+template <typename T>
+void printVectorOfpair(std::vector<std::pair<T, T>> vec)
+{
+    while (!vec.empty())
+    {
+        std::cout << "(" << (*vec.begin()).first << "," << (*vec.begin()).second << ")";
+        vec.erase(vec.begin());
+    }
+
     std::cout << std::endl; // print new line
 }
 
@@ -481,5 +489,130 @@ private:
         }
     }
 };
+
+//------------------------------strassen multiplication matrix------------------------------------
+
+template <typename T>
+void strassenMatrix(std::vector<std::vector<T>> &a, std::vector<std::vector<T>> &b, std::vector<std::vector<T>> &result)
+{
+
+    int m1 = (a[0][0] + a[1][1]) * (b[0][0] + b[1][1]);
+    int m2 = (a[1][0] + a[1][1]) * b[0][0];
+    int m3 = a[0][0] * (b[0][1] - b[1][1]);
+    int m4 = a[1][1] * (b[1][0] - b[0][0]);
+    int m5 = (a[0][0] + a[0][1]) * b[1][1];
+    int m6 = (a[1][0] - a[0][0]) * (b[0][0] + b[0][1]);
+    int m7 = (a[0][1] - a[1][1]) * (b[1][0] + b[1][1]);
+
+    result.push_back({m1 + m4 - m5 + m7, m3 + m5});
+    result.push_back({m2 + m4, m1 + m3 - m2 + m6});
+}
+
+//------------------------------multiplication matrix brute force------------------------------------
+
+template <typename T>
+void multiplicationMatrixBF(std::vector<std::vector<T>> &a, std::vector<std::vector<T>> &b, std::vector<std::vector<T>> &result)
+{
+    if (a[0].size() != b.size()) //Ap,q Bq,r
+    {
+        std::cout << "It's not possible to multiple matrizes";
+    }
+    else
+    {
+        for (int i = 0; i < a.size(); i++)
+        {
+            for (int j = 0; j < b[0].size(); j++)
+            {
+                for (int k = 0; k < b.size(); k++)
+                {
+                    result[i][j] = result[i][j] + (a[i][k] * b[k][j]);
+                }
+            }
+        }
+    }
+}
+
+//------------------------------quickhull------------------------------------
+
+//find side of point p about line (p1p2)
+template <typename T>
+int findSide(std::pair<T, T> &p1, std::pair<T, T> &p2, std::pair<T, T> &p)
+{
+    int value = (p.second - p1.second) * (p2.first - p1.first) -
+                (p2.second - p1.second) * (p.first - p1.first);
+
+    if (value > 0)
+        return 1;
+    if (value < 0)
+        return -1;
+    return 0;
+}
+
+//return value of distance between point p and line (p1p2)
+template <typename T>
+int lineDistance(std::pair<T, T> &p1, std::pair<T, T> &p2, std::pair<T, T> &p)
+{
+    return std::abs((p.second - p1.second) * (p2.first - p1.first) -
+                    (p2.second - p1.second) * (p.first - p1.first));
+}
+
+template <typename T>
+void quickHull(std::vector<std::pair<T, T>> &vec, int n, std::pair<T, T> &p1, std::pair<T, T> &p2, std::vector<std::pair<T, T>> &result, int side)
+{
+    int max_dist = 0, aux = -1;
+    for (int i = 0; i < n; i++)
+    {
+        int tempdist = lineDistance(p1, p2, vec[i]); //find maximal distance point
+        if (findSide(p1, p2, vec[i]) == side && tempdist > max_dist)
+        {
+            aux = i;
+            max_dist = tempdist;
+        }
+    }
+
+    //if no points found, add points to result
+    if (aux == -1)
+    {
+        result.push_back(p1);
+        result.push_back(p2);
+        return;
+    }
+
+    //recurvisely for two parts divided by vec[aux]
+    quickHull(vec, n, vec[aux], p1, result, -findSide(vec[aux], p1, p2));
+    quickHull(vec, n, vec[aux], p2, result, -findSide(vec[aux], p2, p1));
+}
+
+template <typename T>
+void findQuickHull(std::vector<std::pair<T, T>> &vec, std::vector<std::pair<T, T>> &result)
+{
+    T min_x = 0, max_x = 0;
+    int n = vec.size();
+
+    if (n < 3)
+    {
+        std::cout << "QuickHull not possible" << std::endl;
+        return;
+    }
+
+    //finding point with minimum and maximum x
+
+    for (int i = 0; i < n; i++)
+    {
+        if (vec[i].first < vec[min_x].first)
+        {
+            min_x = i;
+        }
+        if (vec[i].first > vec[max_x].first)
+        {
+            max_x = i;
+        }
+    }
+
+    //one side of line
+    quickHull(vec, n, vec[min_x], vec[max_x], result, 1);
+    //other side of line
+    quickHull(vec, n, vec[min_x], vec[max_x], result, -1);
+}
 
 #endif
