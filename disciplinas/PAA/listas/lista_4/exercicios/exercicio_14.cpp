@@ -2,10 +2,10 @@
 
 int main()
 {
-    std::vector<std::pair<float, float>> vec;
-    std::vector<std::pair<float, float>> result;
-    int number_points = 20;
-    float x, y;
+    std::vector<std::pair<int, int>> vec;
+    std::set<std::pair<int, int>> result;
+    int number_points = 30;
+    int x, y;
 
     srand((unsigned int)time(0));
 
@@ -15,16 +15,10 @@ int main()
         y = rand() % 50;
         vec.push_back({x, y});
     }
-    // vec = {std::make_pair(0, 3),
-    //        std::make_pair(1, 1),
-    //        std::make_pair(2, 2),
-    //        std::make_pair(4, 4),
-    //        std::make_pair(0, 0),
-    //        std::make_pair(1, 2),
-    //        std::make_pair(3, 1),
-    //        std::make_pair(3, 3)};
-    findQuickHull(vec, result);
-    printVectorOfpair(result);
+
+    quickHull(vec, result);
+    printVectorOfpair(vec);
+    printSetOfpair(result);
 
     return 0;
 }

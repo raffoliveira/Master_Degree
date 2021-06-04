@@ -532,6 +532,19 @@ void multiplicationMatrixBF(std::vector<std::vector<T>> &a, std::vector<std::vec
     }
 }
 
+//------------------------------printSet0fPair------------------------------------
+
+template <typename T>
+void printSetOfpair(std::set<std::pair<T, T>> vec)
+{
+    while (!vec.empty())
+    {
+        std::cout << "(" << (*vec.begin()).first << ", "
+                  << (*vec.begin()).second << ") ";
+        vec.erase(vec.begin());
+    }
+}
+
 //------------------------------quickhull------------------------------------
 
 //find side of point p about line (p1p2)
@@ -540,6 +553,9 @@ int findSide(std::pair<T, T> &p1, std::pair<T, T> &p2, std::pair<T, T> &p)
 {
     int value = (p.second - p1.second) * (p2.first - p1.first) -
                 (p2.second - p1.second) * (p.first - p1.first);
+
+    /*int value = (p1.first * p2.second) + (p.first * p1.second) + (p2.first * p.second) -
+        (p.first * p2.second) - (p2.first * p1.second) - (p1.first * p.second);*/
 
     if (value > 0)
         return 1;
@@ -557,62 +573,54 @@ int lineDistance(std::pair<T, T> &p1, std::pair<T, T> &p2, std::pair<T, T> &p)
 }
 
 template <typename T>
-void quickHull(std::vector<std::pair<T, T>> &vec, int n, std::pair<T, T> &p1, std::pair<T, T> &p2, std::vector<std::pair<T, T>> &result, int side)
+void findQuickHull(std::vector<std::pair<T, T>> &vec, std::pair<T, T> &p1, std::pair<T, T> &p2, std::set<std::pair<T, T>> &result, int side)
 {
-    int max_dist = 0, aux = -1;
-    for (int i = 0; i < n; i++)
+    int max_distance = 0, aux = -1;
+    for (int i = 0; i < vec.size(); i++)
     {
-        int tempdist = lineDistance(p1, p2, vec[i]); //find maximal distance point
-        if (findSide(p1, p2, vec[i]) == side && tempdist > max_dist)
+        int tempdistance = lineDistance(p1, p2, vec[i]); //find maximal distance point
+        if (findSide(p1, p2, vec[i]) == side && tempdistance > max_distance)
         {
             aux = i;
-            max_dist = tempdist;
+            max_distance = tempdistance;
         }
     }
 
     //if no points found, add points to result
     if (aux == -1)
     {
-        result.push_back(p1);
-        result.push_back(p2);
+        result.insert(p1);
+        result.insert(p2);
         return;
     }
 
     //recurvisely for two parts divided by vec[aux]
-    quickHull(vec, n, vec[aux], p1, result, -findSide(vec[aux], p1, p2));
-    quickHull(vec, n, vec[aux], p2, result, -findSide(vec[aux], p2, p1));
+    findQuickHull(vec, vec[aux], p1, result, -findSide(vec[aux], p1, p2));
+    findQuickHull(vec, vec[aux], p2, result, -findSide(vec[aux], p2, p1));
 }
 
 template <typename T>
-void findQuickHull(std::vector<std::pair<T, T>> &vec, std::vector<std::pair<T, T>> &result)
+void quickHull(std::vector<std::pair<T, T>> &vec, std::set<std::pair<T, T>> &result)
 {
-    T min_x = 0, max_x = 0;
-    int n = vec.size();
-
-    if (n < 3)
+    if (vec.size() < 3)
     {
         std::cout << "QuickHull not possible" << std::endl;
         return;
     }
 
     //finding point with minimum and maximum x
-
-    for (int i = 0; i < n; i++)
+    int min_x = 0, max_x = 0;
+    for (int i = 1; i < vec.size(); i++)
     {
         if (vec[i].first < vec[min_x].first)
-        {
             min_x = i;
-        }
         if (vec[i].first > vec[max_x].first)
-        {
             max_x = i;
-        }
     }
-
     //one side of line
-    quickHull(vec, n, vec[min_x], vec[max_x], result, 1);
+    findQuickHull(vec, vec[min_x], vec[max_x], result, 1);
     //other side of line
-    quickHull(vec, n, vec[min_x], vec[max_x], result, -1);
+    findQuickHull(vec, vec[min_x], vec[max_x], result, -1);
 }
 
 #endif
