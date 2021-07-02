@@ -176,7 +176,7 @@ void bruteForceStringMatch(string original, string pattern)
 
 //--------------------------calculate the distance using Euclidean distance------------------------------------------
 
-float distanceBetweenPoints(vector<pair<float, float>> &vec, auto i, auto j)
+float distanceBetweenPoints(vector<pair<float, float>> &vec, int i, int j)
 {
     return sqrt(pow(abs((vec[i].first - vec[j].first)), 2) + pow(abs((vec[i].second - vec[j].second)), 2));
 }
@@ -190,9 +190,9 @@ void bruteForceClosestPair(vector<pair<float, float>> &vec)
     float distance;                                          //distance between two points
     vector<pair<float, vector<pair<float, float>>>> results; //vector with distance and your pairs of points
 
-    for (auto i = 0; i < vec.size() - 1; i++) //calculate the all possibilities between two points
+    for (int i = 0; i < vec.size() - 1; i++) //calculate the all possibilities between two points
     {
-        for (auto j = i + 1; j < vec.size(); j++)
+        for (int j = i + 1; j < vec.size(); j++)
         {
             distance = distanceBetweenPoints(vec, i, j);              //calculate the distance
             distances_min.push_back(distance);                        //set distance in vector of distances
@@ -295,6 +295,7 @@ GraphBFS::GraphBFS(int vertex) //construct
 {
     this->vertex = vertex;            //set the number of vertex
     list_adj = new list<int>[vertex]; //creating the vector
+    // list_adj.push_back(vertex);
 }
 
 //--------------------------------------------------------------------

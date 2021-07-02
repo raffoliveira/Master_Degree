@@ -5,6 +5,7 @@ class GraphBFS
 {
     int vertex;               //number of vertex
     std::list<int> *list_adj; //point to vector of adjacency list
+    // std::list<int> list_adj;
 
 public:
     GraphBFS(int vertex);                                       //construct

@@ -110,16 +110,18 @@ double percentile(const std::vector<double> &data, int p)
     return v[q];
 }
 
-double median(const std::vector<double> &data)
+double median(std::vector<double> &data)
 {
-    return percentile(data, 50);
+    // return percentile(data, 50);
+    std::nth_element(data.begin(), data.begin() + (data.size() / 2), data.end());
+    return data[data.size() / 2];
 }
 
 int main()
 {
-    std::vector<double> v = readingFile();
-    // std::vector<double> v({1, 5, 5, 5, 4});
-    int per = 75;
+    // std::vector<double> v = readingFile();
+    std::vector<double> v({1, 9, 6, 10, 4, 8});
+    int per = 25;
 
     printVector(v);
 

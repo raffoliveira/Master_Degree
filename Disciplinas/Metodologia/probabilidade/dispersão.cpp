@@ -110,9 +110,11 @@ double percentile(const std::vector<double> &data, int p)
     return v[q];
 }
 
-double median(const std::vector<double> &data)
+double median(std::vector<double> &data)
 {
-    return percentile(data, 50);
+    // return percentile(data, 50);
+    std::nth_element(data.begin(), data.begin() + (data.size() / 2), data.end());
+    return data[data.size() / 2];
 }
 
 std::pair<double, double> interval(const std::vector<double> &data)
@@ -143,7 +145,7 @@ double variance(const std::vector<double> &data)
     {
         sum += std::pow((data[i] - _mean), 2);
     }
-    return sum / data.size();
+    return sum / (data.size() - 1);
 }
 
 double std_dev(const std::vector<double> &data)
@@ -153,8 +155,8 @@ double std_dev(const std::vector<double> &data)
 
 int main()
 {
-    std::vector<double> v = readingFile();
-    // std::vector<double> v({1, 2, 3, 4});
+    // std::vector<double> v = readingFile();
+    std::vector<double> v({1, 2, 3, 4});
     std::pair<double, double> inter = interval(v);
 
     printVector(v);
