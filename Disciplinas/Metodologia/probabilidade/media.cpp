@@ -28,7 +28,7 @@ std::vector<double> readingFile()
 
     std::vector<double> array;
     std::string line;
-    std::string path = "C:\\Users\\rafae\\Documents\\GitHub\\Master_Degree\\Disciplinas\\Metodologia\\probabilidade\\";
+    std::string path = "C:\\Users\\rafae\\Documents\\GitHub\\Master_Degree\\Disciplinas\\Metodologia\\probabilidade\\tests\\";
     std::fstream readFile(path + "medium.txt");
 
     if (readFile.is_open())

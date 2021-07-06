@@ -25,8 +25,8 @@ int main()
 {
     double x = 1.4, mu = 1.56, std_dev = 1.87;
 
-    std::cout << "The normal distribution1 is " << normal_distribution_pdf1(x, mu, std_dev) << std::endl;
-    std::cout << "The normal distribution2 is " << normal_distribution_pdf2(x) << std::endl;
+    std::cout << "The probability 1 is " << normal_distribution_pdf1(x, mu, std_dev) << std::endl;
+    std::cout << "The probability 2 is " << normal_distribution_pdf2(x) << std::endl;
 
     return 0;
 }
