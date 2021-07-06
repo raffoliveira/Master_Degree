@@ -64,10 +64,10 @@ int MFknapSackProblem(int i, int j)
         }
         else
         {
-            aux = std::max(MFknapSackProblem(i - 1, j),
-                           values[i] + MFknapSackProblem(i - 1, j - weights[i]));
+            aux = std::max(MFknapSackProblem(i - 1, j), values[i] + MFknapSackProblem(i - 1, j - weights[i]));
         }
         f[i][j] = aux;
+        printVectorOfVector(f);
     }
 
     return f[i][j];
