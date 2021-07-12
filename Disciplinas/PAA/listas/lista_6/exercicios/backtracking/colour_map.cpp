@@ -5,6 +5,22 @@
 #include <cmath>
 
 template <typename T>
+void printVector(std::vector<T> &vec)
+{
+    std::cout << "[";
+    for (int i = 0; i < vec.size(); i++)
+    {
+        std::cout << vec[i];
+        if (i < vec.size() - 1)
+        {
+            std::cout << ", ";
+        }
+    }
+    std::cout << "]";
+    std::cout << std::endl;
+}
+
+template <typename T>
 void printVectorOfVector(std::vector<std::vector<T>> &vec)
 {
     for (int i = 0; i < vec.size(); i++)
@@ -42,54 +58,66 @@ void printMatrix(std::vector<std::vector<int>> &matrix)
     }
 }
 
-void addedge(std::vector<std::vector<int>> &matrix, int u, int v)
+bool feasible(std::vector<std::vector<int>> &graph, std::vector<int> &colour_map, int index, int k)
 {
-    matrix[u][v] = 1;
-    matrix[v][u] = 1;
-}
-
-void backtracking(std::vector<std::vector<int>> &graph, std::vector<std::vector<int>> colour_map, int color)
-{
-    if (complete(colour_map))
+    for (int i = 0; i < graph.size(); ++i)
     {
-        return;
-    }
-    else
-    {
-        for (int i = 0; i < color; ++i)
+        if (graph[index][i] && colour_map[i] == k) //check the neighbors colors
         {
-            for (int j = 0; j < graph.size(); ++j)
-            {
-                if (feasible(colour_map))
-                {
-                    colour_map[i][j] = colour_map[0][0] + 1;
-                }
-            }
+            return false;
         }
     }
+    return true;
+}
+
+bool backtracking(std::vector<std::vector<int>> &graph, std::vector<int> &colour_map, int color_number, int index)
+{
+    //base case
+    if (index == color_number + 1)
+    {
+        return true;
+    }
+
+    for (int k = 1; k <= color_number; ++k)
+    {
+        if (feasible(graph, colour_map, index, k)) //check if assignment color is good
+        {
+            colour_map.insert(colour_map.begin() + index, k);
+            colour_map.pop_back();
+
+            if (backtracking(graph, colour_map, color_number, index + 1))
+            {
+                return true;
+            }
+
+            colour_map.erase(colour_map.begin() + index); //remove the last insert
+        }
+    }
+
+    return false; //if no possible to assign color
 }
 
 int main()
 {
-    int color = 3;
-    std::vector<std::vector<int>> graph(4, std::vector<int>(4, 0));
-    addedge(graph, 0, 1);
-    addedge(graph, 0, 2);
-    addedge(graph, 0, 3);
-    addedge(graph, 1, 2);
-    addedge(graph, 1, 3);
-    addedge(graph, 2, 0);
-    addedge(graph, 2, 1);
-    addedge(graph, 2, 3);
-    addedge(graph, 3, 1);
-    addedge(graph, 3, 0);
+    int color_number = 4;
+    std::vector<std::vector<int>> graph = {{0, 1, 1, 1, 0},
+                                           {1, 0, 1, 0, 1},
+                                           {1, 1, 0, 1, 0},
+                                           {1, 0, 1, 0, 1},
+                                           {0, 1, 0, 1, 0}};
 
     printVectorOfVector(graph);
 
-    std::vector<std::vector<int>> colour_map(graph);
-    colour_map[0][0] = 1;
+    std::vector<int> colour_map(graph.size(), 0);
 
-    backtracking(graph, colour_map, color);
+    if (backtracking(graph, colour_map, color_number, 0))
+    {
+        printVector(colour_map);
+    }
+    else
+    {
+        (std::cout << "Solution does not exist" << std::endl);
+    }
 
-    printMatrix(graph);
+    return 0;
 }
