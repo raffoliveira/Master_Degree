@@ -117,7 +117,7 @@ void fillboard(std::vector<int> &sol, std::vector<std::vector<int>> &board, int 
 
 int main()
 {
-    int nqueens = 16;
+    int nqueens = 4;
     std::vector<int> sol({});
     std::vector<std::vector<int>> board(nqueens, std::vector<int>(nqueens, 0));
 

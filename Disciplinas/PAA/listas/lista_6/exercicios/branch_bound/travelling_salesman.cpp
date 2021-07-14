@@ -142,8 +142,8 @@ void branchandbound(std::vector<std::vector<int>> &matrix,
 
 int main()
 {
-    std::string myfile = "brazil58.tsp";
-    int header = 7, number_cities = 58;
+    std::string myfile = "gr17.tsp";
+    int header = 7, number_cities = 17;
     float bound = 1000000;
     std::vector<std::vector<int>> matrix(number_cities, std::vector<int>(number_cities, 0));
     std::vector<int> domain;

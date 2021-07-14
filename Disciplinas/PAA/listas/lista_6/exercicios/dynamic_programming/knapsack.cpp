@@ -67,7 +67,6 @@ int MFknapSackProblem(int i, int j)
             aux = std::max(MFknapSackProblem(i - 1, j), values[i] + MFknapSackProblem(i - 1, j - weights[i]));
         }
         f[i][j] = aux;
-        printVectorOfVector(f);
     }
 
     return f[i][j];
@@ -75,7 +74,7 @@ int MFknapSackProblem(int i, int j)
 
 int main()
 {
-    for (int i = 0; i < number_items + 1; i++)
+    for (int i = 0; i < number_items + 1; i++) ///preenchendo a linha e coluna 0's com 0
     {
         f[i][0] = 0;
     }
