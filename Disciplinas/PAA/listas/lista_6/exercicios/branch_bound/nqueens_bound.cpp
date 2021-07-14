@@ -84,9 +84,8 @@ std::vector<int> branchandbound(std::vector<int> &domain, int nqueens, int &boun
 
 int main()
 {
-    int nqueens = 4, bound = 0;
+    int nqueens = 4, bound = 2;
     std::vector<int> domain({0, 1, 2, 3}); //columns
-
     std::vector<int> result = branchandbound(domain, nqueens, bound);
 
     printVector(result);
