@@ -1,0 +1,132 @@
+#implement custom NumPy JSON serialization
+class NumpyArrayEncoder(JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, numpy.ndarray):
+            return obj.tolist()
+        return JSONEncoder.default(self, obj)
+        
+        
+-------------------------------------------------------------------------------------------
+
+#convert the beats in a graph using visibility graph and convert to a dgl graph format
+
+def visibility_dgl_convert(dict_train, dict_test):
+    
+    #auxiliar variables to training beats
+    train_graphs={}
+    train_dgl_graphs=[]
+    train_dgl_labels_graphs=[]
+    train_number_nodes=[]
+    train_number_edges=[]
+    train_mean_degree=[]
+
+    #auxiliar variables to test beats
+    test_graphs={}
+    test_dgl_graphs=[]
+    test_dgl_labels_graphs=[]
+    test_number_nodes=[]
+    test_number_edges=[]
+    test_mean_degree=[]
+
+    #encoding classes using one hot coding 
+    classes =['N','S','V','F','Q']
+    encoder = LabelEncoder()
+    encoder.fit(classes)
+    encoded_classes = encoder.transform(classes)
+    dummy_classes = np_utils.to_categorical(encoded_classes)
+
+
+    #-----------------------------TRAINING DATASET---------------------------------------------------
+    #iterate in dict of beats in training datasets
+    for classes_, beats in dict_train.items(): 
+        #iterate of all beats
+        for beat in beats: 
+            #getting the graph label  
+            label = dummy_classes[classes.index(classes_)]     
+            #converting the beat in a graph using visibility graph
+            g = NaturalVG(directed=None).build(beat) 
+            #converting the graph in a igraph graph format
+            igg = g.as_igraph() 
+
+            # source nodes from each edge converted in tensor object
+            source_nodes_ids = th.tensor([i[0] for i in ig.Graph.get_edgelist(igg)]) 
+            #destination nodes from each edge converted in tensor object
+            destination_nodes_ids = th.tensor([i[1] for i in ig.Graph.get_edgelist(igg)])
+            #creating a dgl graph format using source and destination nodes from each edge
+            graph_dgl = dgl.graph((source_nodes_ids,destination_nodes_ids), num_nodes=igg.vcount())         
+
+            #saving dgl's graphs and labels graphs in a list
+            train_dgl_graphs.append(graph_dgl)
+            train_dgl_labels_graphs.append(label)
+
+            #getting the number of nodes
+            nodes_ = igg.vcount()
+            #getting the number of edges
+            edges_ = igg.ecount()
+            #taking the number of mean_degree
+            mean_degree_ = np.array([igg.degree(i) for i in range(igg.vcount())]).mean() 
+            #saving each metrics
+            train_number_nodes.append(nodes_) 
+            train_number_edges.append(edges_) 
+            train_mean_degree.append(mean_degree_)
+            
+    #saving the graph as adjacency matrix
+    train_graphs.update({'nodes': np.array(train_number_nodes),
+                         'edges': np.array(train_number_edges),
+                         'mean_degree': np.array(train_mean_degree)})             
+
+    #converting the graph label to dgl label format using tensor object
+    label_graph = {'glabel': th.tensor(np.array(train_dgl_labels_graphs))}
+    #saving the graphs in dgl file format
+    save_graphs('./Datasets/Dgl_beats_graphs/train_dgl_graphs.bin', train_dgl_graphs, label_graph)       
+    #saving the metrics in json format        
+    with open('./Datasets/Graphs_info/train_graphs_info.json', 'w') as f:
+        json.dump(train_graphs, f, cls=NumpyArrayEncoder) 
+
+
+    #-----------------------------TEST DATASET---------------------------------------------------
+    it = 1    
+    for classes_, beats in dict_test.items(): 
+        #iterate of all beats
+        for beat in beats: 
+            #getting the graph label  
+            label = dummy_classes[classes.index(classes_)]     
+            #converting the beat in a graph using visibility graph
+            g = NaturalVG(directed=None).build(beat) 
+            #converting the graph in a igraph graph format
+            igg = g.as_igraph() 
+
+            # source nodes from each edge converted in tensor object
+            source_nodes_ids = th.tensor([i[0] for i in ig.Graph.get_edgelist(igg)]) 
+            #destination nodes from each edge converted in tensor object
+            destination_nodes_ids = th.tensor([i[1] for i in ig.Graph.get_edgelist(igg)])
+            #creating a dgl graph format using source and destination nodes from each edge
+            graph_dgl = dgl.graph((source_nodes_ids,destination_nodes_ids), num_nodes=igg.vcount())         
+
+            #saving dgl's graphs and labels graphs in a list
+            test_dgl_graphs.append(graph_dgl)
+            test_dgl_labels_graphs.append(label)
+
+            #getting the number of nodes
+            nodes_ = igg.vcount()
+            #getting the number of edges
+            edges_ = igg.ecount()
+            #taking the number of mean_degree
+            mean_degree_ = np.array([igg.degree(i) for i in range(igg.vcount())]).mean() 
+            #saving each metrics
+            test_number_nodes.append(nodes_) 
+            test_number_edges.append(edges_) 
+            test_mean_degree.append(mean_degree_)
+            
+    #saving the graph as adjacency matrix
+    test_graphs.update({'nodes': np.array(test_number_nodes),
+                        'edges': np.array(test_number_edges),
+                        'mean_degree': np.array(test_mean_degree)})
+
+    #converting the graph label to dgl label format using tensor object
+    label_graph = {'glabel': th.tensor(np.array(test_dgl_labels_graphs))}
+    #saving the graphs in dgl file format
+    save_graphs('./Datasets/Dgl_beats_graphs/test_dgl_graphs.bin', test_dgl_graphs, label_graph)       
+    #saving the metrics in json format        
+    with open('./Datasets/Graphs_info/test_graphs_info.json', 'w') as f:
+        json.dump(test_graphs, f, cls=NumpyArrayEncoder) 

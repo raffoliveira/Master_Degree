@@ -1,0 +1,42 @@
+def page_rank_network(g):
+    page_r = ig.Graph.pagerank(g)
+    
+    return page_r   
+    
+
+def plot_page_rank(g,page_ranks):  
+    
+    page_ranks = np.array(page_ranks) #converting the list into numpy.array
+        
+    normalize_list(page_ranks, 2, 15) #normalizing the page_ran
+    
+    g.vs["size"] = page_ranks.tolist()  #saving the values of page_ranks
+    
+    # create plotting styles
+    visual_style = {}
+    visual_style["vertex_size"] = g.vs["size"]
+    visual_style["edge_width"] = 0.5
+    #visual_style["layout"] = layout
+    visual_style["bbox"] = (500, 500)
+    visual_style["margin"] = 30
+    
+    plt.figure(figsize=(12,9))     
+    ig.plot(g, **visual_style)
+    plt.title('PageRank')
+    plt.show()
+    
+    
+    
+_g.vs["size"] = _norm_page.tolist()
+_g.vs["label_size"] = 2
+
+
+# create plotting styles
+visual_style = {}
+visual_style["vertex_size"] = _g.vs["size"]
+visual_style["edge_width"] = 0.5
+#visual_style["layout"] = layout
+visual_style["bbox"] = (500, 500)
+visual_style["margin"] = 30
+
+ig.plot(_g, **visual_style)

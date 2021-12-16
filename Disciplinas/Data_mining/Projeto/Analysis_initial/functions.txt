@@ -1,0 +1,240 @@
+features_norm_ = scaler.fit_transform(X_train.drop(['Gender_FEMALE', 'Gender_MALE'], axis=1))
+feat_norm = pd.DataFrame(features_norm_, columns=['Comp_0','Comp_1','Comp_2','Comp_3','Comp_4','Comp_5','Comp_6','Comp_7','Comp_8','Comp_9','Comp_10','Comp_11'])
+feat = pd.concat([feat_norm, X_train[['Gender_FEMALE', 'Gender_MALE']]], axis=1)
+feat.dropna()
+feat
+
+
+-----------------------------------------------------------------------------------------------
+def pipeline(X,y,C=0.2, kernel='rbf', gamma='scale'):
+
+    #creating the pipeline with SVC rbf
+
+    #pipeline to process specific features
+    feat_transformer = Pipeline(steps=[('standardScaler', StandardScaler())])
+
+    #features to apply pre processing
+    select_feat = list(X.columns)
+
+    #compose pipelines
+    preprocessor = ColumnTransformer(transformers=[
+        ('features_trans', feat_transformer, select_feat)
+    ])
+
+    model_ = Pipeline(steps=[('processor', preprocessor),   
+                            ('svc', SVC(C=C, kernel=kernel, gamma=gamma, probability=True, random_state=25))])
+
+    # Split dataset into training and testing sets
+    X_train_r_ages, X_test_r_ages, y_train_r_ages, y_test_r_ages = train_test_split(X,
+                                                                                    y,
+                                                                                    test_size=0.2, 
+                                                                                    random_state=25,
+                                                                                    stratify=y) #80% training and 20% testing
+
+    #training the model using the training set
+    model_.fit(X_train_r_ages, y_train_r_ages) 
+
+    train_score = model_.score(X_train_r_ages, y_train_r_ages)
+    pred_train_prob = model_.predict_proba(X_train_r_ages)
+    roc_auc_score_train = metrics.roc_auc_score(y_train_r_ages, pred_train_prob, multi_class='ovo', average='weighted')
+    print(f'Train score: {train_score}')
+    print(f'ROC AUC Score train: {roc_auc_score_train}')
+    print('\n')
+
+    #validating the response for testing set
+    test_score = model_.score(X_test_r_ages, y_test_r_ages)
+    pred_test_prob = model_.predict_proba(X_test_r_ages)
+    roc_auc_score_test = metrics.roc_auc_score(y_test_r_ages, pred_test_prob, multi_class='ovo', average='weighted')
+    print(f'Test score: {test_score}')
+    print(f'ROC AUC Score test: {roc_auc_score_test}') 
+ 
+---------------------------------------------------------------------------------------------------
+def fitting_linear(X, y, C=1.0):
+    
+    # Split dataset into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X,
+                                                        y,
+                                                        test_size=0.2, 
+                                                        random_state=25,
+                                                        stratify=y) #80% training and 20% testing
+    
+    #normalize features
+    X_train_norm = scaler.fit_transform(X_train)
+    X_test_norm = scaler.fit_transform(X_test)    
+    
+    #fit model
+    _model = SVC(C = C, kernel='linear', probability=True, random_state=25)
+    _model.fit(X_train_norm, y_train)
+    
+    #predict class labels on training data
+    pred_labels_training = _model.predict(X_train_norm)
+    pred_labels_training_prob = _model.predict_proba(X_train_norm)
+    #predict class labels on testing data
+    pred_labels_testing = _model.predict(X_test_norm)
+    pred_labels_testing_prob = _model.predict_proba(X_test_norm)
+    
+    #use score method to get accuracy of the model
+    print(f'----------------MODEL LINEAR WITH C={C}----------------------')
+    print('\n')
+    print('---------------------Evaluation on Training Data------------------------')
+    score_training = _model.score(X_train_norm, y_train)
+    roc_auc_score_training = metrics.roc_auc_score(y_train, pred_labels_training_prob, multi_class='ovo', average='weighted')
+    print(f'Accuracy Score: {score_training}')
+    print(f'ROC AUC Score: {roc_auc_score_training}')
+    #classification report to evaluate the model
+    print(classification_report(y_train, pred_labels_training, zero_division=0))
+    print('------------------------------------------------------------------------')
+    
+    print('----------------------Evaluation on Testing Data-----------------------')
+    score_testing = _model.score(X_test_norm, y_test)
+    roc_auc_score_testing = metrics.roc_auc_score(y_test, pred_labels_testing_prob, multi_class='ovo', average='weighted')
+    print(f'Accuracy Score: {score_testing}')
+    print(f'ROC AUC Score: {roc_auc_score_training}')
+    #classification report to evaluate the model
+    print(classification_report(y_test, pred_labels_testing, zero_division=0))
+    print('------------------------------------------------------------------------')
+
+-------------------------------------------------------------------------------------------------------------
+
+def pipeline_kfold(X,y,C=0.1,kernel='rbf',gamma='scale'):
+    
+    #pipeline to process specific features
+    feat_transformer = Pipeline(steps=[('standardScaler', StandardScaler())])
+
+    #features to apply pre processing
+    select_feat = list(X.columns)
+
+    #compose pipelines
+    preprocessor = ColumnTransformer(transformers=[
+        ('features_trans', feat_transformer, select_feat)
+    ])
+
+    model2 = Pipeline(steps=[('processor', preprocessor),   
+                            ('svc', SVC(C=C, kernel=kernel, gamma=gamma, probability=True, random_state=25))])
+
+
+    #creating the 10-fold cross validation
+    kfold = KFold(n_splits=10, shuffle=True, random_state=42)
+
+    #taking the results of model
+    results = cross_validate(model2, X, y, cv=kfold, return_train_score=True)
+    
+    print("Average accuracy training: %f (%f)" %(results['train_score'].mean(), results['train_score'].std())) 
+    print("Average accuracy testing: %f (%f)" %(results['test_score'].mean(), results['test_score'].std())) 
+    
+    
+    ---------------------------------------------------------------------------------------------------------------
+    
+    def fitting(X, y, kernel='rbf', C=1.0, gamma='scale'):
+    
+    #available kernels: LINEAR, RBF, POLY, SIGMOID, PRECOMPUTED
+    
+    # Split dataset into training and testing sets
+    X_train, X_test, y_train, y_test = StratifiedKFold(X,
+                                                        y,
+                                                        test_size=0.2, 
+                                                        random_state=25,
+                                                        stratify=y) #80% training and 20% testing
+    
+    #normalize features
+    X_train_norm = scaler.fit_transform(X_train)
+    X_test_norm = scaler.fit_transform(X_test)  
+    
+    #fit model
+    model = SVC(C = C, kernel=kernel, gamma=gamma, probability=True, random_state=25)
+    model.fit(X_train_norm, y_train)
+    
+    #predict class labels on training data
+    pred_labels_training = model.predict(X_train_norm)
+    pred_labels_training_prob = model.predict_proba(X_train_norm)
+    
+    #predict class labels on testing data
+    pred_labels_testing = model.predict(X_test_norm)
+    pred_labels_testing_prob = model.predict_proba(X_test_norm)
+    
+    #use score method to get accuracy of the model
+    print(f'------------MODEL NON-LINEAR WITH KERNEL={kernel}, C={C} and GAMMA={gamma}----------')
+    print('\n')
+    print('---------------------Evaluation on Training Data------------------------')
+    score_training = model.score(X_train_norm, y_train)
+    roc_auc_score_training = metrics.roc_auc_score(y_train, pred_labels_training_prob, multi_class='ovo', average='weighted')
+    print(f'Accuracy Score: {score_training}')
+    print(f'ROC AUC Score: {roc_auc_score_training}')
+    #classification report to evaluate the model
+    print(classification_report(y_train, pred_labels_training, zero_division=0))
+    print('------------------------------------------------------------------------')
+    
+    print('----------------------Evaluation on Testing Data-----------------------')
+    score_testing = model.score(X_test_norm, y_test)
+    roc_auc_score_testing = metrics.roc_auc_score(y_test, pred_labels_testing_prob, multi_class='ovo', average='weighted')
+    print(f'Accuracy Score: {score_testing}')
+    print(f'ROC AUC Score: {roc_auc_score_training}')
+    #classification report to evaluate the model
+    print(classification_report(y_test, pred_labels_testing, zero_division=0))
+    print('------------------------------------------------------------------------')   
+ 
+ 
+ ----------------------------------------------------------------------------------------------------------------
+ 
+scores_ = {'accuracy' : metrics.make_scorer(metrics.accuracy_score),
+           'recall'   : metrics.make_scorer(metrics.recall_score, average='weighted', zero_division=0),
+           'precision': metrics.make_scorer(metrics.precision_score, average='weighted', zero_division=0),
+           'f1'       : metrics.make_scorer(metrics.fbeta_score, beta = 2, average='weighted' )}
+
+results = cross_validate(grid.best_estimator_, X_11, y_11, cv=5, scoring=scores_, return_train_score=True)
+pd.DataFrame(results)
+
+print(f"Average accuracy training of best estimator: {results['train_score'].mean()} ({results['train_score'].std()})") 
+print(f"Average accuracy testing of best estimator: {results['test_score'].mean()} ({results['test_score'].std()})") 
+
+ ----------------------------------------------------------------------------------------------------------------
+
+#creating the 10-fold cross validation
+#stratifiedKFold is better to classification tasks with imbalance class distributions
+#kfold_ = KFold(n_splits=10, shuffle=True, random_state=42)
+#skf = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
+
+----------------------------------------------------------------------------------------------------------------
+
+#Evaluate metrics by cross-validation with best estimator
+#results = cross_validate(grid_randomized.best_estimator_, X, y, cv=5, scoring=scores_, return_train_score=True)
+
+#print(f"Average accuracy training of best estimator: {results['train_score'].mean()} ({results['train_score'].std()})") 
+#print(f"Average accuracy testing of best estimator: {results['test_score'].mean()} ({results['test_score'].std()})") 
+
+#print(grid_randomized.cv_results_)
+
+#training parameters
+#print(f'Score training: {grid_randomized.score(X_train_, y_train_)}')
+
+#testing parameters
+#print(f'Score testing: {grid_randomized.score(X_test_, y_test_)}') 
+
+----------------------------------------------------------------------------------------------------------------
+
+
+| **NUMBER_CLASSES** | **MODEL SVM** | **METHOD** | **PROCESSING**   | **ACCURACY_TRAINING** | **ACCURACY_TESTING**|
+| :---------------:  | :---------------  | :--------------- | :--------------- | :---------------: | :--------------: |
+| 11                 | LINEAR             |  SIMPLE           |         -         |  0.78            |  0.77             |  
+| 11                 | RBF                |  SIMPLE           |         -         |  0.82            |  0.80             |
+| 04                 | RBF                |  SIMPLE           |         -         |  0.84            |  0.84             |
+| 04                 | RBF                |  SIMPLE           | REMOVE AGE OUTLIER|  0.90            |  0.83             |
+| 04                 | RBF                |  PIPELINE         | REMOVE AGE OUTLIER|  0.83            |  0.82             |
+| 04                 | LINEAR             |  PIPELINE         | REMOVE AGE OUTLIER|  0.80            |  0.80             |
+| 04                 | RBF                | PIPELINE/KFOLD    | REMOVE AGE OUTLIER|  0.84            |  0.83             |
+| 04                 | LINEAR             | PIPELINE/KFOLD    | REMOVE AGE OUTLIER|  0.81            |  0.80             |
+|* 04                 | RBF                | RANDOMIZEDSEARCHCV    | REMOVE AGE OUTLIER|  0.90            |  0.91             |
+|** 04                 | RBF                | RANDOMIZEDSEARCHCV    | REMOVE FEAT GENDER|  0.85            |  0.85             |
+| 04                 | RBF                | PIPELINE/KFOLD    | REMOVE FEAT GENDER|  0.84            |  0.83             |
+| 04                 | RBF                | RANDOMIZEDSEARCHCV    | FEATURE SELECTION - HIGH CORRELATION > 0.7 |  0.81          |  0.83             |
+| 04                 | RBF                | PIPELINE/KFOLD    | FEATURE SELECTION - HIGH CORRELATION > 0.7 |  0.76          |  0.75             |
+| 04                 | RBF                | RANDOMIZEDSEARCHCV    | FEATURE SELECTION - HIGH CORRELATION > 0.7 / REMOVE FEAT GENDER |  0.83 |  0.84 |
+| 04                 | RBF                | PIPELINE/KFOLD    | FEATURE SELECTION - HIGH CORRELATION > 0.7 / REMOVE FEAT GENDER |  0.76 |  0.75 |
+| 04                 | RBF                | RANDOMIZEDSEARCHCV    | FEATURE SELECTION - HIGH CORRELATION > 0.9 |  0.81          |  0.81             |
+| 04                 | RBF                | PIPELINE/KFOLD    | FEATURE SELECTION - HIGH CORRELATION > 0.9 |  0.77          |  0.76             |
+| 04                 | RBF                | RANDOMIZEDSEARCHCV    | FEATURE SELECTION - HIGH CORRELATION > 0.9 / REMOVE FEAT GENDER |  0.83 |  0.83 |
+| 04                 | RBF                | PIPELINE/KFOLD    | FEATURE SELECTION - HIGH CORRELATION > 0.9 / REMOVE FEAT GENDER |  0.76 |  0.75 |
+|*** 04                 | RBF                | RANDOMIZEDSEARCHCV    | FEATURE SELECTION - PCA |  0.88          |  0.88             |
+| 04                 | RBF                | PIPELINE/KFOLD    | FEATURE SELECTION - PCA |  0.83          |  0.82             |
+| 04                 | RBF                | RANDOMIZEDSEARCHCV    | FEATURE SELECTION - PCA / REMOVE FEAT GENDER |  0.88         |  0.88             |
+| 04                 | RBF                | PIPELINE/KFOLD    | FEATURE SELECTION - PCA / REMOVE FEAT GENDER |  0.83         |  0.82             |

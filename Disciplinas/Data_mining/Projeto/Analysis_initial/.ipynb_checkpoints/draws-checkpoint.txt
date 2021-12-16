@@ -1,0 +1,48 @@
+Treatment outliers
+
+
+a = plt.boxplot(df_over_04['PatientAge'])
+plt.show()
+
+#verificando o pontos limites do boxplot
+[item.get_ydata() for item in a['whiskers']]
+
+#contabilizando aa quantidade de outliers abaixo de 15
+df_over_04[df_over_04['PatientAge'] <= 15]
+
+def treatment_outliers_lreg(X):
+    
+    #substituindo os outliers por None
+    for i,j in enumerate(X['PatientAge']):
+        if j <= 15:
+            X.at[i,'PatientAge'] = None 
+    
+    #removendo o valores None do dataframe
+    X_without_none = X.dropna()
+    
+    #fit da regressão linear sem os valores None
+    reg = LinearRegression()
+    reg.fit(X_without_none.drop(['PatientAge','Rhythm_grouped'],axis=1),
+            X_without_none[['PatientAge']])
+    
+    #criando um dataframe com todos os valores None
+    X_with_none = X[X.PatientAge.isna()].reset_index(drop=True)
+    
+    #utilizando a regressão linear para prever os novos valores dos outliers
+    list_ages = reg.predict(X_with_none.drop(['PatientAge','Rhythm_grouped'],axis=1))
+    
+    #convertendo a predição para um array de inteiros
+    list_ages = [int(i) for i in np.round(list_ages.squeeze())]
+    
+    #substituindo os valores de None pelas predições
+    X_with_none['PatientAge'] = list_ages
+    
+    #concatenando os resultados
+    X = pd.concat([X_without_none, X_with_none],axis=0,ignore_index=True)
+    
+    return X    
+    
+    
+    
+#aplicando o tratamento de outliers
+df_over_04 = treatment_outliers_lreg(df_over_04)
